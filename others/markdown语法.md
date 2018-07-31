@@ -61,7 +61,7 @@
 `---` 至少3个`-`
 
 # 图片
-![alt text](./images/psb.jpeg "我的家乡")
+![测试图片](./images/test.jpeg "测试图片")
 
 # 流程图
 
