@@ -35,7 +35,7 @@ server {
 }
 ```
 - 访问
-在浏览器输入 `http://localhost:8004/adminer/mysql.php`，输入相应信息后即可登录并开始使用
+在浏览器输入 `http://localhost:8004/adminer/mysql.php`， 输入相应信息后即可登录并开始使用。
 
 ### 排错
 如果在`SQL命令`点击`执行`时出现`无效 CSRF 令牌。重新发送表单……`。
