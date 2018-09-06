@@ -35,12 +35,12 @@ server {
 }
 ```
 - 访问
-在浏览器输入 `http://localhost:8004/adminer/mysql.php`， 输入相应信息后即可登录并开始使用。
+在浏览器输入 `http://localhost:8004/adminer/mysql.php`，
+输入相应信息后即可登录并开始使用。
 
-### 排错
-如果在`SQL命令`点击`执行`时出现`无效 CSRF 令牌。重新发送表单……`。
-
-请找到`php.ini`中的`session.save_path = "/path/to/dir/"`，确认该目录存在且有写权限。
+> **排错**  
+> 如果在`SQL命令`点击`执行`时出现`无效 CSRF 令牌。重新发送表单……`。  
+> 请找到`php.ini`中的`session.save_path = "/path/to/dir/"`，确认该目录存在且有写权限。
 
 ## 其他
 比如 phpMyAdmin、navicat 等，要么就是安排复杂，要么就是需要授权，最终都放弃了。
