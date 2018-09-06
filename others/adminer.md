@@ -11,7 +11,7 @@
 
 ## adminer
 如下图
-![IMAGE](../images/terminal.png)
+![IMAGE](../images/adminer.png)
 我想要的功能都支持，是我最喜欢的方式啦！当然，前提是我是PHPer。
 
 ### 安装
