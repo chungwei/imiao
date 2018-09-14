@@ -22,6 +22,11 @@ UPDATE tb SET amount=amout-100 WHERE user='A';
 SELECT * FROM tb WHERE user='B';
 UPDATE tb SET amount=amout+100 WHERE user='B';
 ```
+事务2
+```
+# 查询A余额
+SELECT amount FROM tb WHERE user='A'; 
+```
 
 ## 原子性
 ### 概念
@@ -68,10 +73,25 @@ UPDATE tb SET amount=amout+100 WHERE user='B';
 >> `undo log` 和 `redo log` 是成对出现的，统称`transaction log`。
 
 ## 隔离性
+### 概念
 多个事务并发访问时，事务之间是隔离的，一个事务不应该影响其它事务运行效果。
 
 隔离级别          | 脏读 | 幻读 | 不可重复读 |
 -----------------|-----|-----|----------|
+Serializable     |  x  |  x  |    x     |
+Repeatable read  |  x  |  √  |    x     |
+Read committed   |  x  |  √  |    √     |
+Read uncommitted |  √  |  √  |    √     |
+
+> 脏读和不可重复读侧重于修改，而幻读侧重于新增或删除
+
+### 实现
+
+
+不同事务隔离级别，针对`事务1`和`事务2`的表现如下
+
+隔离级别          | 事务1 | 事务2 | 不可重复读 |
+-----------------|------|------|----------|
 Serializable     |  x  |  x  |    x     |
 Repeatable read  |  x  |  √  |    x     |
 Read committed   |  x  |  √  |    √     |
