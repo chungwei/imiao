@@ -109,7 +109,7 @@ Read uncommitted |  √  |  √  |    √     |
 # 参看文献
 1. [百度百科-数据库事务](https://baike.baidu.com/item/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BA%8B%E5%8A%A1)
 1. [MySQL的四种事务隔离级别](https://www.cnblogs.com/huanongying/p/7021555.html)
-1. []()
+1. [『浅入浅出』MySQL 和 InnoDB](https://draveness.me/mysql-innodb)
 1. []()
 1. []()
 1. []()
