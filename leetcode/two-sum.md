@@ -1,6 +1,8 @@
 # 原题
 https://leetcode.com/problems/two-sum/
 
+> 注意：同样的元素不能被重复利用
+
 # 算法
 ## 暴力解决
 O(n^2)
