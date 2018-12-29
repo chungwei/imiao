@@ -23,7 +23,7 @@ PHPer & Gopher，在互联网教育、外贸电商、互联网出行和金融科
 一级服务
 
 ## 用例图
-![IMAGE](resources/D351F0E2207AB9732EB9A0C4DCEEAB6B.jpg =685x378)
+![IMAGE](./resources/D351F0E2207AB9732EB9A0C4DCEEAB6B.jpg =685x378)
 
 ## 模型
 ![IMAGE](resources/8C25693BE8EDF689DEA30A609B1AB6CD.jpg =391x358)
