@@ -26,7 +26,7 @@ PHPer & Gopher，在互联网教育、外贸电商、互联网出行和金融科
 ![IMAGE](resources/D351F0E2207AB9732EB9A0C4DCEEAB6B.jpg)
 
 ## 模型
-![IMAGE](resources/8C25693BE8EDF689DEA30A609B1AB6CD.jpg =391x358)
+![IMAGE](resources/8C25693BE8EDF689DEA30A609B1AB6CD.jpg)
 
 ## 核心技术指标
 - QPS 峰值10w，TPS 峰值1w
@@ -35,17 +35,17 @@ PHPer & Gopher，在互联网教育、外贸电商、互联网出行和金融科
 
 # 技术实现
 ## 系统架构图
-![IMAGE](resources/9BD419C47DBD53431809EF7DA9F1B514.jpg =775x339)
+![IMAGE](resources/9BD419C47DBD53431809EF7DA9F1B514.jpg)
 
 ## 时序图
 ### 建券
-![IMAGE](resources/859A2562737B8E889524F4840823B56A.jpg =523x439)
+![IMAGE](resources/859A2562737B8E889524F4840823B56A.jpg)
 
 ### 发券
-![IMAGE](resources/6954ED591B6CF528273E36D2B8E9C367.jpg =518x317)
+![IMAGE](resources/6954ED591B6CF528273E36D2B8E9C367.jpg)
 
 ### 用券
-![IMAGE](resources/A281A6D8F7D3DDB6B90EC7649F451FD3.jpg =864x863)
+![IMAGE](resources/A281A6D8F7D3DDB6B90EC7649F451FD3.jpg)
 
 ## 服务高可用方案
 作为一级服务，关键量化指标如下：
@@ -111,8 +111,8 @@ PHPer & Gopher，在互联网教育、外贸电商、互联网出行和金融科
 
 6. 使用什么语言开发？
 》PHP，期间使用Go重构，下图是对比PHP和Go的性能差异
-![IMAGE](resources/80FE517704CDC950FAE69C3DF597C340.jpg =1288x223)
-![IMAGE](resources/84111488BCE69D57CD2CEC2FA7ADF485.jpg =1284x165)
+![IMAGE](resources/80FE517704CDC950FAE69C3DF597C340.jpg)
+![IMAGE](resources/84111488BCE69D57CD2CEC2FA7ADF485.jpg)
 
 7. 这么高的QPS/TPS，如何设计缓存和存储？
 》系统的性能瓶颈一直都在DB，对DB做了很多优化。DB拆了6个实例、分了1000张，单表数据尽量不超1000w左右(历史数据定期归档)，升级MySQL版本到5.7(单实例一般2w读、2k写没太大压力)；资源隔离，不混部。[MySQL官方压测]( https://www.mysql.com/why-mysql/benchmarks/)、 [MySQL民间压测](http://dimitrik.free.fr/blog/archives/2013/09/mysql-performance-reaching-500k-qps-with-mysql-57.html) 
