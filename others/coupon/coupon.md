@@ -118,5 +118,5 @@ PHPer & Gopher，在互联网教育、外贸电商、互联网出行和金融科
 》系统的性能瓶颈一直都在DB，对DB做了很多优化。DB拆了6个实例、分了1000张，单表数据尽量不超1000w左右(历史数据定期归档)，升级MySQL版本到5.7(单实例一般2w读、2k写没太大压力)；资源隔离，不混部。[MySQL官方压测]( https://www.mysql.com/why-mysql/benchmarks/)、 [MySQL民间压测](http://dimitrik.free.fr/blog/archives/2013/09/mysql-performance-reaching-500k-qps-with-mysql-57.html) 
 系统没使用缓存，所有数据都直接查DB，Redis用于计数器、防重入。
 
-9. 整个系统一共使用了多少机器？
+9. 整个系统一共使用了多少机器？  
 》PHP41台(Go6台) + Redis6台 + MySQL18台 + Codis/DBProxy(混部) = 65
