@@ -119,4 +119,5 @@ PHPer & Gopher，在互联网教育、外贸电商、互联网出行和金融科
 系统没使用缓存，所有数据都直接查DB，Redis用于计数器、防重入。
 
 9. 整个系统一共使用了多少机器？  
-》PHP41台(Go6台) + Redis6台 + MySQL18台 + Codis/DBProxy(混部) = 65
+》PHP41台(Go6台) + Redis6台 + MySQL18台 + Codis/DBProxy(混部) = 65  
+有没有发现Go的性能秒杀PHP？哈哈哈
