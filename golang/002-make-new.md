@@ -32,7 +32,7 @@ func new(Type) *Type
 
 ## 不同
 - make 只能用于 slice/map/channel 三种类型；
-- make 返回的是第一个参数的类型；new 返回的是第一个参数类型的指针
+- make 返回的是第一个参数的类型；new 返回的是该类型0值的指针
 
 ## 示例
 ```go
