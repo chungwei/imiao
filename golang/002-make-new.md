@@ -31,5 +31,14 @@ func new(Type) *Type
 - new 和 make 都可以用来分配空间，初始化类型
 
 ## 不同
-- make 只能用于 slice/map/chan 三种类型
-- make 返回的是第一个参数的类型，new 返回的是第一个参数类型的指针
+- make 只能用于 slice/map/channel 三种类型；
+- make 返回的是第一个参数的类型；new 返回的是第一个参数类型的指针
+
+## 示例
+```go
+i := new(int)
+fmt.Printf(`%d %#v `, *i, i) // 0 (*int)(0x416020)
+	
+m := make([]int, 3)
+fmt.Printf(`%d %#v `, len(m), m) // 3 []int{0, 0, 0} 
+```
