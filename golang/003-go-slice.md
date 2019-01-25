@@ -122,4 +122,95 @@ s = s[:cap(s)]
 ```
 ![IMAGE](./resources/go-slices-usage-and-internals_slice-3.png)
 
+但要注意的是，切片的长度不能大于容量，如果尝试做这样的操作，就意味着索引越界，最终将会引起`panic`；类似的，切片也不能访问小于0的索引。
+
+## 切片的增长
+要提高切片的容量，我们必须是新建一个更大容量的切片，并把原切片的值复制到新切片中，其中的技术细节，类似于其他语言中如何实现动态数组。下面的例子，是将原切片`s`容量翻倍增长的具体实现
+```
+t := make([]byte, len(s), (cap(s)+1)*2) // +1 in case cap(s) == 0
+for i := range s {
+        t[i] = s[i]
+}
+s = t
+```
+上述代码中的循环段，实际上就是内置方法`copy`的实现，通过名字可以知道，该方法的功能就是将原切片的值复制到目标切片中，最终返回的是被复制的元素个数。
+```
+func copy(dst, src []T) int
+```
+上面的`copy`方法，支持两个不同长度切片之间的复制，但复制的元素个数是以二者间较小者为准。此外，该方法可以正确处理在原切片和目标切片之间共享底层数组，以及切片重叠等。
+
+使用`copy`方法，上面的代码段可以简化为
+```
+t := make([]byte, len(s), (cap(s)+1)*2)
+copy(t, s)
+s = t
+```
+
+还有一个常见的操作是追加数据到切片末尾。下面的方法实现了切片元素的追加功能，如果原切片容量不足可自动扩容，最后返回更新后的切片：
+```
+func AppendByte(slice []byte, data ...byte) []byte {
+    m := len(slice)
+    n := m + len(data)
+    if n > cap(slice) { // if necessary, reallocate
+        // allocate double what's needed, for future growth.
+        newSlice := make([]byte, (n+1)*2)
+        copy(newSlice, slice)
+        slice = newSlice
+    }
+    slice = slice[0:n]
+    copy(slice[m:n], data)
+    return slice
+}
+```
+
+使用`AppendByte`场景如：
+```
+p := []byte{2, 3, 5}
+p = AppendByte(p, 7, 11, 13)
+// p == []byte{2, 3, 5, 7, 11, 13}
+```
+
+类似`AppendByte`方法的功能非常有用，因为它可以自由控制切片的增长，对用户比较透明。在不同的场景中，可能会需要不同的内存容量分配，或设置不同的容量。  
+
+但实际应用场景中，自由控制切片的增长并不是必须的，所以Go提供了内置方法`append`，如
+```
+func append(s []T, x ...T) []T
+```
+
+该方法将一个元素追加到切片末尾，并在必要时会自动对切片扩容。
+
+```
+a := make([]int, 1)
+// a == []int{0}
+a = append(a, 1, 2, 3)
+// a == []int{0, 1, 2, 3}
+```
+
+如果是追加一个切片到另一个切片末尾，则使用`...`即可，如
+```
+a := []string{"John", "Paul"}
+b := []string{"George", "Ringo", "Pete"}
+a = append(a, b...) // equivalent to "append(a, b[0], b[1], b[2])"
+// a == []string{"John", "Paul", "George", "Ringo", "Pete"}
+```
+
+一个`nil`的切片实际上是长度为0的切片，所以我们可以把切片直接用于循环语句中，如
+```
+// Filter returns a new slice holding only
+// the elements of s that satisfy fn()
+func Filter(s []int, fn func(int) bool) []int {
+    var p []int // == nil
+    for _, v := range s {
+        if fn(v) {
+            p = append(p, v)
+        }
+    }
+    return p
+}
+```
+
+## 可能的陷阱
+
+
+
 
