@@ -210,7 +210,32 @@ func Filter(s []int, fn func(int) bool) []int {
 ```
 
 ## 可能的陷阱
+像前面提到的，切片的赋值并不会复制底层的数组，这个底层的数组一直在原来的内存块中直到没有被引用，最终`gc`回收，但有时一个大数组，实际上只有其中的一小段数据被使用，其他用不到，就造成了内存的浪费。  
 
+例如，下面的方法，先把数据加载到内存中，从中找到连续的数字，并将找到的数字放入切片，最后返回。
+```
+var digitRegexp = regexp.MustCompile("[0-9]+")
 
+func FindDigits(filename string) []byte {
+    b, _ := ioutil.ReadFile(filename)
+    return digitRegexp.Find(b)
+}
+```
+当上例中的文件数据被加载到内存中，只要该方法返回的切片没有被`gc`回收，那么整个文件的数据就一直在内存中。  
+
+为了避免这个问题，我们应该把要返回的切片数据赋值给一个新的切片，再把新的切片返回。如
+```
+func CopyDigits(filename string) []byte {
+    b, _ := ioutil.ReadFile(filename)
+    b = digitRegexp.Find(b)
+    c := make([]byte, len(b))
+    copy(c, b)
+    return c
+}
+```
+上例中更简单的实现是直接使用`append`方法，大家一起加油，多动手练习哈！
+
+## 进一步阅读
+[Effective Go](https://golang.org/doc/effective_go.html) 还有更多的关于[切片](https://golang.org/doc/effective_go.html#slices)和[数组](https://golang.org/doc/effective_go.html#arrays)的文章，同时，Go[语言规范](https://golang.org/doc/go_spec.html)中也有[切片的定义](https://golang.org/doc/go_spec.html)，切片和数组之间的[关联](https://golang.org/doc/go_spec.html#Length_and_capacity)、[辅助类](https://golang.org/doc/go_spec.html#Making_slices_maps_and_channels)、[方法](https://golang.org/doc/go_spec.html#Appending_and_copying_slices)等。
 
 
