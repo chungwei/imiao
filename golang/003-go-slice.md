@@ -98,5 +98,28 @@ s := x[:] // a slice referencing the storage of x
 如上述我们定义的切片`s = make([]byte, 5)`，其结构如下图
 
 ![IMAGE](./resources/go-slices-usage-and-internals_slice-1.png)
-它的长度
+
+切片的长度是指引用的数组段的元素个数，而容量是底层数组的长度。接下来我们将通过几个示例来明确长度和容量的差异。  
+
+还是我们上面的切片 `s`，我们看一下其数据结构和底层数组的关系  
+```
+s = s[2:4]
+```
+![IMAGE](./resources/go-slices-usage-and-internals_slice-2.png)
+
+从上图可以看出，切片的赋值并没有复制原来切片的数据，而是创建了一个新的指针指向，这样就可以保证对切片的操作跟数组一样高兴。但是，修改新切片的值，则会影响到原来的切片：
+```
+d := []byte{'r', 'o', 'a', 'd'}
+e := d[2:] 
+// e == []byte{'a', 'd'}
+e[1] = 'm'
+// e == []byte{'a', 'm'}
+// d == []byte{'r', 'o', 'a', 'm'}
+```
+再次提到我们上面的切片 `s`，目前它的长度小于容量，我们可以把它的长度增长到等于其容量：
+```
+s = s[:cap(s)]
+```
+![IMAGE](./resources/go-slices-usage-and-internals_slice-3.png)
+
 
