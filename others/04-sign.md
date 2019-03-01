@@ -44,7 +44,7 @@ partner=1900000109&desc=a&b&test=1
 密钥是：  
 8db4a013a8   
 
-签名的结果为： 
-sign=md5(desc=a&b&partner=1900000109&test=1&key=8db4a013a8
+签名的结果为：   
+md5(desc=a&b&partner=1900000109&test=1&key=8db4a013a8
 )->toUpperCase = 8DB4A013A8B515349C307F1E448CE836 
 
