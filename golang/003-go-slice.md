@@ -33,7 +33,7 @@ Go数组是值类型，一个数组变量是指整个数组，而不是像C语�
 b := [2]string{"Penn", "Teller"}
 ```
 或者，也可以这么定义
-```
+```go
 b := [...]string{"Penn", "Teller"}
 ```
 
