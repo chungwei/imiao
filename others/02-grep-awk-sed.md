@@ -18,6 +18,16 @@
 - `-E`：开启扩展(Extend)的正则表达式
 - `-r,-R`：递归查找
 
+**示例**
+```bash
+grep -Fvf file2 file1  # 查找file1有file2无的记录
+
+grep -Fvf file1 file2  # 查找file1无file2有的记录
+
+```
+
+相反则是 grep -Fvf A B
+
 ## awk
 `awk` 命令处理一个或者多个文件时，它会依次读取文件的每一行内容，然后对其进行处理，即行处理器。
 
