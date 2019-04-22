@@ -43,7 +43,9 @@ PHP 单测框架，具体可参看 [官方文档](http://docs.mockery.io) 或 [�
 ### 开始写单测
 假如在项目中有个Util类，现在有针对该类中的一个方法写单测。  
 
-**Util类**
+#### 示例1
+
+_Util.php_
 ```php
 
 class Util
@@ -55,8 +57,8 @@ class Util
 }
 ```
 
-单测类如下：  
-**UtilTest类**
+_UtilTest.php_
+
 ```php
 
 include_once dirname(__FILE__) . '/../index.php';
@@ -90,7 +92,9 @@ class UtilTest extends Mockery\Adapter\Phpunit\MockeryTestCase
 }
 ```
 
-**运行**
+_运行结果_  
+进入测试类`UtilTest.php`所在的目录，运行以下的其中一条命令  
+
 ```php
 phpunit UtilTest.php
 phpunit --bootstrap ../../vendor/autoload.php UtilTest.php --filter test_inMap_1
@@ -100,3 +104,89 @@ phpunit --bootstrap ../../vendor/autoload.php UtilTest.php --filter test_inMap_1
 
 单测失败如下图  
 ![IMAGE](resources/D0D47DC1C97DD34E602E6CF429ECCCBE.jpg)
+
+#### 示例2
+_ThemisBpmTaskData.php_
+```php
+class ThemisBpmTaskData
+{
+    private $dao;
+    private $logger;
+
+    public function __construct()
+    {
+        $this->dao    = new ThemisBpmTaskDao();
+        $this->logger = Context::getService('logger');
+    }
+
+    /**
+     * 获取一条数据
+     *
+     * @param $where
+     *
+     * @return array
+     */
+    public function queryOneTask($where)
+    {
+        $now            = microtime(true);
+        $where['valid'] = 0;
+        $conds          = $this->dao->prepareWhere($where);
+        $optString      = $this->dao->prepareOption(['limit' => 'limit 1']);
+        $result         = $this->dao->select([], $conds['where'], $conds['bind'], '');
+        $latency        = intval((microtime(true) - $now) * 1000) . 'ms';
+        $this->logger->info(["queryOneTask res" => $result, "latency={$latency}"]);
+
+        return isset($result[0]) ? $result[0] : [];
+    }
+}
+```
+_BpmCommonService.php_
+
+```php
+
+class BpmCommonService
+{
+    public static function hello()
+    {
+        $o = new ThemisBpmTaskData();
+        $r = $o->queryOneTask(['where' => 1]);
+        if ($r) {
+            return '11111111111';
+        }
+        return '-11111111111';
+    }
+}
+
+```
+_BpmCommonServiceTest.php_
+```php
+class BpmCommonServiceTest extends MockeryTestCase
+{
+    public function tearDown() {
+        Mockery::close();
+    }
+
+    /**
+     * phpunit BpmCommonServiceTest.php
+     */
+    public function test_hello_1()
+    {
+        $mock = Mockery::mock(ThemisBpmTaskData::class)->makePartial();
+        $mock->shouldReceive('queryOneTask')->andReturn(true);
+
+        $o = new \NewHouse\service\bpmproxy\BpmCommonService();
+        $this->assertEquals('11111111111', $o->hello());
+    }
+}
+```
+_运行结果_  
+进入测试类所在的目录，运行命令  
+
+```php
+phpunit BpmCommonServiceTest.php
+```
+单测成功如下图  
+![IMAGE](resources/7C31834AE13C06B7CA1BB417881F657A.jpg)
+
+单测失败如下图  
+![IMAGE](resources/9CB1C5408AE16382E4D3DE5958050974.jpg)
