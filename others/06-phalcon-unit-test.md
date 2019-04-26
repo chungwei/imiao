@@ -38,12 +38,13 @@ PHP 单测框架，具体可参看 [官方文档](http://docs.mockery.io) 或 [�
 2. 项目是`composer`管理的
 3. 安装`PHPUnit`参看 [文档](http://www.phpunit.cn/getting-started.html)
 4. 引入`mockery`，在`composer.json`文件中的`"require-dev"`配置中加入`"mockery/mockery": "@stable"`，保存后运行`composer update mockery`
+5. 运行 composer update mockery
 5. 将`public/index.php`复制到`tests`目录下，把`\Framework\ErrorHandler::init();`这行代码后的其他删除
 
 ### 开始写单测
 假如在项目中有个Util类，现在有针对该类中的一个方法写单测。  
 
-#### 示例1
+#### 示例1：入门
 
 _Util.php_
 ```php
@@ -63,15 +64,12 @@ _UtilTest.php_
 
 include_once dirname(__FILE__) . '/../index.php';
 
-class UtilTest extends Mockery\Adapter\Phpunit\MockeryTestCase
+class UtilTest extends MockeryTestCase
 {
     public function tearDown() {
         Mockery::close();
     }
 
-    /**
-     * phpunit --bootstrap ../../vendor/autoload.php UtilTest.php --filter test_inMap_1
-     */
     public function test_inMap_1()
     {
         $cases = [];
@@ -86,7 +84,7 @@ class UtilTest extends Mockery\Adapter\Phpunit\MockeryTestCase
         $cases[] = $c;
 
         foreach ($cases as $i) {
-            $this->assertEquals($i['expect'], NewHouse\library\Util::inMap($i['case']['k'], $i['case']['arr']));
+            $this->assertEquals($i['expect'], Util::inMap($i['case']['k'], $i['case']['arr']));
         }
     }
 }
@@ -105,7 +103,7 @@ phpunit --bootstrap ../../vendor/autoload.php UtilTest.php --filter test_inMap_1
 单测失败如下图  
 ![IMAGE](resources/D0D47DC1C97DD34E602E6CF429ECCCBE.jpg)
 
-#### 示例2
+#### 示例2：mock数据库
 _ThemisBpmTaskData.php_
 ```php
 class ThemisBpmTaskData
@@ -134,7 +132,6 @@ class ThemisBpmTaskData
         $optString      = $this->dao->prepareOption(['limit' => 'limit 1']);
         $result         = $this->dao->select([], $conds['where'], $conds['bind'], '');
         $latency        = intval((microtime(true) - $now) * 1000) . 'ms';
-        $this->logger->info(["queryOneTask res" => $result, "latency={$latency}"]);
 
         return isset($result[0]) ? $result[0] : [];
     }
@@ -143,7 +140,6 @@ class ThemisBpmTaskData
 _BpmCommonService.php_
 
 ```php
-
 class BpmCommonService
 {
     public static function hello()
@@ -190,3 +186,86 @@ phpunit BpmCommonServiceTest.php
 
 单测失败如下图  
 ![IMAGE](resources/9CB1C5408AE16382E4D3DE5958050974.jpg)
+
+#### 示例3：mock下游服务
+_BpmClient.php_
+```php
+
+class BpmClient
+{
+    /**
+     * 获取当前审批人
+     */
+    public static function getCurrentAuditor($bizKey)
+    {
+        $args        = [];
+        $args['cmd'] = 'task.query';
+        $args['tqm'] = json_encode(['processBusinessKey' => $bizKey]);
+        $resp        = self::doRequest($args);
+
+        return $resp;
+    }
+    
+    private static function doRequest($args, $method = 'POST')
+    {
+        $cfg = Context::getService('config')->degrade->toArray();
+        if ($cfg['call_bpm_switcher']) { // false流量放行,true将直接拒绝
+            return false;
+        }
+
+        $cfg    = Context::getService('config')->api_client->bpm->toArray();
+
+        $args = self::genSign($args); // 生成签名
+        $addr = "http://{$cfg['machine']['host']}";
+
+        $req  = new HttpRequest();
+        $resp = $req->callApi($addr, $args, $method, [], true);
+        return $resp;
+    }
+}
+```
+
+_BpmCommonService.php_
+```php
+class BpmCommonService
+{
+    public static function callBpm()
+    {
+        $r = BpmClient::getCurrentAuditor('xxxxxxxxxxxxx');
+        if ($r) {
+            return 'aa';
+        }
+        return 'bb';
+    }
+}
+```
+
+_BpmCommonServiceTest.php_
+```php
+class BpmCommonServiceTest extends MockeryTestCase
+{
+    public function tearDown() {
+        Mockery::close();
+    }
+
+    /**
+     * phpunit BpmCommonServiceTest.php
+     */
+    public function test_callBpm_2()
+    {
+        $mock = Mockery::mock('overload:\NewHouse\client\bpm\BpmClient');
+        $mock->shouldReceive('getCurrentAuditor')->andReturn('');
+
+        $this->assertEquals('bb', BpmCommonService::callBpm());
+    }
+}
+```
+
+_运行结果_  
+进入测试类所在的目录，运行命令  
+
+```php
+phpunit BpmCommonServiceTest.php --filter test_callBpm_2
+```
+单测成功如下图  
+![IMAGE](resources/6CFB06F0F98D1770CA59EB9E157E1810.jpg)
