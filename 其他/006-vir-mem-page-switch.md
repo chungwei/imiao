@@ -10,5 +10,14 @@
 ### 原理示意图
 假设内存可容纳3个页大小，按照 7 0 1 2 0 3 0 4 的次序访问页。假设内存按照栈的方式来描述访问时间，在上面的，是最近访问的，在下面的是，最远时间访问的，LRU就是这样工作的。
 ![IMAGE](resources/v2-584ed398c35ba76250cfb2f01b20ec0c_hd.jpg)
+> 摘自 https://zhuanlan.zhihu.com/p/34133067
 
+### 需要考虑的问题
+1. 如何某页最近是否(未)被访问
+1. 如何保证上述查过过程的高性能
+1. 如何互换页的位置
 
+## 参考资料
+1. [缓存淘汰算法--LRU算法](https://zhuanlan.zhihu.com/p/34989978)
+1. [LRU原理和Redis实现——一个今日头条的面试题](https://zhuanlan.zhihu.com/p/34133067)
+1. [漫画：什么是LRU算法？](https://zhuanlan.zhihu.com/p/52196637)
