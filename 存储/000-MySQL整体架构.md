@@ -1,13 +1,13 @@
 # MySQL 整体架构
 
 ## 整体逻辑架构
-![IMAGE](resources/EF0FBD299E49EF599CF0FC7BC0DB7B13.jpg)
+![IMAGE](resources/EF0FBD299E49EF599CF0FC7BC0DB7B13.jpg)  
 (图1. 整体逻辑示意图)  
 
-![IMAGE](resources/71793949DCA020AEBCECB4BC8FDF0AB2.jpg)
+![IMAGE](resources/71793949DCA020AEBCECB4BC8FDF0AB2.jpg)  
 (图2. 细化后整体逻辑示意图)  
 
-![IMAGE](resources/A098D315C713AD07283B02E8BEC608C6.jpg)
+![IMAGE](resources/A098D315C713AD07283B02E8BEC608C6.jpg)  
 (图3. SQL查询过示意图)  
 
 ## 模块说明
@@ -51,7 +51,7 @@ MySQL将缓存存放在一个引用表，通过一个哈希值索引，这个哈
 > MySQL在查询优化阶段就为每一张表创建了一个handler实例，优化器可以根据这些实例的接口来获取表的相关信息，包括表的所有列名、索引统计信息等。
 
 ## 主从同步
-参看如下示意图
+参看如下示意图  
 ![IMAGE](resources/4C50A075C04362D8D325AC34F46199AE.jpg)
 
 ## 参考资料
