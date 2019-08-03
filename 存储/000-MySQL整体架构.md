@@ -29,7 +29,7 @@ MySQL将缓存存放在一个引用表，通过一个哈希值索引，这个哈
 2. 如查询结果可以被缓存，那么执行后将结果存入缓存，也会带来额外的系统消耗 
 3. 在写操作(包括加字段)时，必须将对应表的所有缓存都设置为失效
 
-基于此，应该谨慎使用查询缓存(已考虑在高版本不再支持)。
+基于此，查询缓存往往弊大于利，不推荐使用，MySQL8.0版本已不再支持该功能。
 
 ### 关于分析器
 通过关键字对SQL进行解析，即词法分析和语法分析，并生成一颗解析树。
@@ -50,8 +50,11 @@ MySQL将缓存存放在一个引用表，通过一个哈希值索引，这个哈
 在解析和优化阶段以后，MySQL生成了执行计划，查询执行引擎会根据执行计划给出的指令逐步执行得出结果。整个执行过程的大部分操作均是通过调用存储引擎实现的接口(handler API)来完成。
 > MySQL在查询优化阶段就为每一张表创建了一个handler实例，优化器可以根据这些实例的接口来获取表的相关信息，包括表的所有列名、索引统计信息等。
 
+## 主从同步
+参看如下示意图
+![IMAGE](resources/4C50A075C04362D8D325AC34F46199AE.jpg)
 
 ## 参考资料
-1. 图1、图3 引自 [MySQL逻辑架构及性能优化原理](https://blog.csdn.net/fuzhongmin05/article/details/70904190)
-2. 图2 引自 [1.MySQL整体逻辑架构](https://blog.csdn.net/ajian005/article/details/17427981)
+1. [MySQL逻辑架构及性能优化原理](https://blog.csdn.net/fuzhongmin05/article/details/70904190)
+2. [1.MySQL整体逻辑架构](https://blog.csdn.net/ajian005/article/details/17427981)
 3. [MySQL Internals Manual](https://dev.mysql.com/doc/internals/en/)
