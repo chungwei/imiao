@@ -57,19 +57,6 @@ B树是一种多路自平衡的搜索树，它类似普通的平衡二叉树，�
 3. 搜索有可能在非叶子节点结束
 4. 在关键字全集内做一次查找，性能逼近二分查找
 
-查找的伪代码
-```php
-BTree_Search(node, key) {
-  if(node == null) return null;
-  foreach(node.key) {
-    if(node.key[i] == key) return node.data[i];
-    if(node.key[i] > key) return BTree_Search(point[i]->node);
-  }
-  return BTree_Search(point[i+1]->node);
-}
-data = BTree_Search(root, my_key);
-```
-
 ### B+树
 B+树是B树的变体，也是一种多路搜索树，下图是B+树的简化图
 ![IMAGE](resources/263F480DAEBEA5D1224A4C416F7CBD68.jpg)
@@ -105,7 +92,7 @@ InnoDB辅助索引示意图参看下图：(假设Col1为主键，Col3为辅助�
 对比InnoDB的主索引和辅助索引，
 - InnoDB主索引data域存储了完整的数据记录，而辅助索引data域存储相应记录主键的值，换句话说，InnoDB辅助索引都引用主键作为data域。
 - 由于二者存储结构的差异，辅助索引搜索需要检索两遍索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录。
->【提问：所有的辅助索引都需要检索两遍吗？非也，覆盖索引不需要，因为索引文件已包含需要的所有数据】
+>【提问：所有的辅助索引都需要检索两遍吗？非也，覆盖索引不需要，因为索引文件已包含需要的所有数据】  
 >【提问：[面试题：InnoDB中一棵B+树能存多少行数据？](https://zhuanlan.zhihu.com/p/67982911)，约2kw】
 
 ## 对比MyISAM和InnoDB
