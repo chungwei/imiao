@@ -45,7 +45,7 @@ AOF出现是为了弥补RDB的不足(数据的不一致性)。
 ### 具体实现
 AOF采用日志的形式来记录每个写操作，并追加到文件中。Redis重启的会根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作。如下图所示： 
 
-![IMAGE](resources/5025A5B69BB151E29557FE4888331A89.jpg)
+![IMAGE](resources/2F62F303F940ADD4CAEABB5A312E2208.jpg)
 
 其流程如下：
 1. 命令追加(append)：将Redis的写命令追加到缓冲区aof_buf
@@ -72,7 +72,7 @@ Redis提供了`bgrewriteaof`指令用于对AOF日志进行重写，达到瘦身�
 - 新解决方案
 重写期间，主进程创建一个新的aof_buf，新的AOF文件用于接收新写入的命令，sync策略保持不变，此时系统需要向两个aof_buf，两个AOF文件同时追加新写入的命令。当主进程收到子进程重写AOF文件完成后，停止向老的aof_buf，AOF文件追加命令，然后删除旧的AOF文件(流程跟原来保持一致)；将将子进程新生成的AOF文件重命名为appendonly.aof.last。系统运行期间同时存在两个AOF文件，一个是当前正在写的AOF，另一个是存量的AOF数据文件。因此需要修改数据库恢复相关逻辑，加载AOF时先要加载存量数据appendonly.aof.last，再加载appendonly.aof。
 
-重写的触发机制：当AOF文件大小是上次rewrite后大小的一倍且文件大于64M时触发(阈值是可以配置的)。
+重写的触发机制：当AOF文件大小是上次rewrite后大小的一倍且文件大于64M时触发(阈值是可以配置的)， 或 手动触发。
 
 #### 降低日志丢失概率
 Linux的glibc提供了fsync(int fd)函数可以将指定文件的内容强制从内核缓存刷到磁盘。只要Redis进程同步调用fsync函数就可以保证AOF日志不丢失。但fsync是一个磁盘IO操作，如果执行一条指令就要fsync一次，那么性能就会受到很大的影响。  
@@ -100,3 +100,5 @@ Redis重启时，先加载RDB，再重放增量AOF日志就可以完全替代之
 1. [RDB 持久化策略](http://wiki.jikexueyuan.com/project/redis/rdb.html)
 1. [AOF 持久化策略](http://wiki.jikexueyuan.com/project/redis/aof.html)
 2. [Redis · 特性分析 · AOF Rewrite 分析](https://www.kancloud.cn/taobaomysql/monthly/140085)
+3. [Redis AOF 持久化详解](https://zhuanlan.zhihu.com/p/75894903)
+4. [聊聊 Linux IO](https://www.0xffffff.org/2017/05/01/41-linux-io/)
