@@ -19,6 +19,11 @@ Redis是单进程，同时对外提供服务使用的是单线程！
 
 同时，由于使用了非阻塞IO，所以可以处理客户端的高并发连接。
 
+其文件事件处理器如下图所示，  
+![IMAGE](resources/C4A4D24FAF2257A5C836A7D37632591B.jpg)  
+![IMAGE](resources/71472EB3BAC5D3931B0FC91919BC3680.jpg)  
+> I/O多路复用程序负责监听多个套接字，并向文件事件分派器传送那些产生了事件的套接字
+
 > 【提问：Redis如何使用单进程单线程支撑高并发？】
 
 ### 通信协议
@@ -50,10 +55,58 @@ typedef struct redisObject {
 - 当对象不再被一个程序使用时， 它的引用计数值会被-1
 - 当对象的引用计数值变为0时， 对象所占用的内存会被释放
 
-此外， 对象的引用计数属性还带有对象共享的作用，以便节省内存，如图所示：
+此外， 对象的引用计数属性还带有对象共享的作用，以便节省内存，如图所示：  
 ![IMAGE](resources/9457B4CCD30B6B6689A071E47FEB69A7.jpg)
 
-## 关于处理命令的主要逻辑
+## 关于命令请求的执行过程
+> 服务器经过初始化之后，才能开始接受命令
+
+客户端执行命令`SET KEY VALUE`，并得到返回值`OK`，这个过程经历了：
+1. 用户执行命令后，客户端C调用写入函数，将协议数据`*3\r\n$3\r\nSET\r\n$3\r\nKEY\r\n$5\r\nVALUE\r\n`通过套接字向服务器S传送
+1. 当S的文件事件处理器执行时，它会察觉到C所对应的读事件已经就绪，于是将协议文本读入，并保存到C对应的redisClient结构的查询缓存中
+1. S对查询缓存中数据分析，从命令表中查找相应命令SET的实现函数
+1. S执行命令的实现函数，修改全局状态server变量，并将命令的执行结果保存到C对应的redisClient结构的回复缓存中，然后为C的fd关联写事件
+1. 当C的fd写事件就绪时，将回复缓存中的命令结果`OK`传回给客户端
+2. 打印`OK`给用户，命令执行完毕
+
+### 发送命令
+当用户在C中输入一个命令请求时，C将命令请求转换成协议格式，然后通过套接字连接和传送到S，如下图所示，  
+![IMAGE](resources/D151C655A0E76541C2D9F454767186C6.jpg)
+
+### S读取命令数据
+S对输入缓冲区中的命令请求进行分析，提取出命令请求中包含的参数、参数的个数，然后分别将参数和参数个数保存到C状态的argv和argc里面。如下图所示，  
+![IMAGE](resources/F294AC0383A5AEF5F779E4F712F2022D.jpg)
+
+### 从命令表查找命令
+命令执行器首先要做的是根据C状态的argv[0]参数，在命令表中查找参数所指定的命令，找到后返回"set"键所对应的redisCommand结构，C状态的cmd 指针会指向这个redisCommand结构。如下图所示，  
+![IMAGE](resources/F9AB1B0DCBF236FC59AE9AFCBA51DA0D.jpg)
+
+### 执行命令
+在真正执行命令之前，会先做一些校验，
+1. 检查C状态的cmd指针是否指向 NULL
+1. 检查C的cmd属性指向的redisCommand结构的arity属性，是否小于命令请求所给定的参数个数
+1. 检查C是否已经通过了身份验证
+1. 如果S打开了maxmemory功能，检查S的内存占用情况，并在有需要时进行内存回收
+2. 如果S上一次执行BGSAVE命令时出错，且S打开了stop-writes-on-bgsave-error功能，且S即将要执行的命令是一个写命令，那么S将拒绝执行这个命令
+3. 如果C当前正在用SUBSCRIBE或PSUBSCRIBE命令订阅，那么S只会执行客户端发来的SUBSCRIBE、PSUBSCRIBE、UNSUBSCRIBE、PUNSUBSCRIBE命令
+1. 如果S正在数据载入， 那么C发送的命令必须带有l标识才会被S执行
+1. 如果S因为执行Lua而超时并进入阻塞状态，那么S只会执行SHUTDOWN nosave命令和SCRIPT KILL命令
+1. 如果C正在执行事务，那么S只会执行C的EXEC、DISCARD、MULTI、WATCH四个命令
+1. 如果S打开了监视器功能，那么S会将要执行的命令和参数等信息发送给监视器
+
+校验完成之后，结合上面的示意图，最终真正执行的是`setCommand(client);`，并把结果保存到RedisClient结构的回复缓存中，如下图所示，  
+
+![IMAGE](resources/8669E0479F370BA2D12551843DB67342.jpg)
+
+执行命令完成后，还可能进行：
+1. 记录慢日志
+2. 写AOF日志
+3. 复制命令给从库
+
+### 将结果返回给C并显示
+当C套接字变为可写状态时，S就会执行命令回复处理器，将保存在输出缓冲区中的命令回复发送给C，并在发送完毕之后清空输出缓冲区，为处理下一个命令请求做好准备。同时，C解析返回结果并显示给用户，如下图所示，  
+
+![IMAGE](resources/2F700AD5842C358ECB3F58814713376F.jpg)
 
 
 ## 关于事务
@@ -123,7 +176,12 @@ typedef struct redisObject {
 2. 避免使用事务
 2. 使用批量操作提高效率，如能使用mget、mset的场景，就不要循环进行get、set
 
-### 分布式的高可用方案
+### 分布式锁
+基于Redis实现的分布式锁，
+1. setnx
+2. redlock
+
+### 高可用方案
 #### 缓存雪崩
 缓存雪崩可以简单的理解为：由于原有缓存失效，新缓存未到期间(例如：我们设置缓存时采用了相同的过期时间，在同一时刻出现大面积的缓存过期)，所有原本应该访问缓存的请求都去查询数据库了，而对数据库CPU和内存造成巨大压力，严重的会造成数据库宕机。从而形成一系列连锁反应，造成整个系统崩溃。  
 
@@ -147,38 +205,16 @@ typedef struct redisObject {
 解决方案：
 - 简单分布式互斥锁，如Redis的setnx
 
-#### 分布式锁
-基于Redis实现的分布式锁，
-1. setnx
-2. redlock
+#### 分布式高可用
+详情请参看[Redis分布式高可用架构](https://github.com/chungwei/imiao/blob/master/存储/104-Redis分布式高可用架构.md)
 
-#### 一致性Hash
-
-
-
-
-### 其他
-1. [Redis总结](https://zhuanlan.zhihu.com/p/55057324)
-1. [Redis 哨兵机制](http://wiki.jikexueyuan.com/project/redis/guard-mechanism.html)
-1. [Codis作者黄东旭细说分布式Redis架构设计和踩过的那些坑们](https://mp.weixin.qq.com/s?__biz=MzAwMDU1MTE1OQ==&mid=208733458&idx=1&sn=691bfde670fb2dd649685723f7358fea&scene=2&from=timeline&isappinstalled=0&key=744487672bdc02d166e3f67ac368f073cf0db249cdf3047ec2fc414da5d3f26a580d715c66a7f6bcbeacfaf04bacb10cdf046278fb0f52322ab7139f0d609eaaefa50e82e47242fc96f00b8aedc077ab&ascene=0&uin=Nzc3MzQ2MTgy&devicetype=iMac+MacBookPro11%2C1+OSX+OSX+10.10.3+build(14D136)&version=12020810&nettype=WIFI&lang=zh_CN&fontScale=100&pass_ticket=6AHO5gBAReB43RtRd6u0irzM75OfuXjdb5Xs9RdAMSwoieMLW7ic1%2Bjsd1djK0Ay)
-1. [面试必备：什么是一致性Hash算法？](https://zhuanlan.zhihu.com/p/34985026)
-1. [五分钟看懂一致性哈希算法](https://juejin.im/post/5ae1476ef265da0b8d419ef2)
-1. 一致性hash的作用，一致性怎么体现？
-1. Redis 哈希槽
-1. 乐观锁-CAS(Compare And Set)，CAS 操作包含三个操作数：
-  2.1 内存位置的值(V)
-  2.3 预期原值(A)
-  2.4 新值(B)
 
 ## 参考资料
 1. [热点Key的发现与解决之道](https://yq.aliyun.com/articles/404817)
 1. [如何发现Redis热点Key，解决方案有哪些？](https://mp.weixin.qq.com/s?__biz=MzUyNDkzNzczNQ==&mid=2247486805&idx=1&sn=55dd5c2d296b097470fbde17a4e3c3d6&chksm=fa24f23dcd537b2b0a7eef2e20f604980adc58fdc066324bf7eed35ab156e38f87c3166bce7f&scene=21#wechat_redirect)
 1. [Redis 分布式锁进化史解读 + 缺陷分析](https://mp.weixin.qq.com/s?__biz=MzA5ODM5MDU3MA==&mid=2650864919&idx=1&sn=f9d2218155e7c4a2c04d57970ede4160&chksm=8b661a52bc119344bffbc46292d162163525c9525b3c507bdab23e425494d6e58ab6a364e046&mpshare=1&scene=24&srcid=0220xpwaWSmhP1XEnhtWZxYc&key=51937ec95710ec6392c5232e6c2494e17f5ce044d1b68f3c350a03481b32139b460cb496c8292e10ef498ebcd29614411d76b5832c2bf45218210f70490eae05fa5a184c01e2a3c12aea6029b5da8e8d&ascene=0&uin=Nzc3MzQ2MTgy)
-3. []()
-4. []()
-5. []()
-6. []()
-7. []()
+1. [Redis 设计与实现[第1版]](https://redisbook.readthedocs.io/en/latest/index.html)
+2. [Redis 设计与实现](http://redisbook.com/)
 1. [缓存穿透，缓存击穿，缓存雪崩解决方案分析](https://blog.csdn.net/zeb_perfect/article/details/54135506)
 1. [Redis系列十：缓存雪崩、缓存穿透、缓存预热、缓存更新、缓存降级](https://www.cnblogs.com/leeSmall/p/8594542.html)
 1. [Hello Redis，我有7个问题想请教你](https://mp.weixin.qq.com/s?__biz=MzI1NDQ3MjQxNA==&mid=2247489614&idx=1&sn=803113aa84dfc6796bc93b73903d845d&chksm=e9c5e1ffdeb268e9899349abd769e3459b8dc33f225379c8fa10b55abafa12b8f0b477b45b2c&mpshare=1&scene=24&srcid=&key=51937ec95710ec63deca9e2191d31f40f932318dc82b6ff31b346a33b5908f0cdfd64453e36343259eadee65380a3c392f7a91ec8f54666dad0ea01c3e14b49f9070796e0f7008684968518a3d369794&ascene=0&uin=Nzc3MzQ2MTgy&nettype=WIFI&lang=zh_CN&fontScale=100&pass_ticket=6AHO5gBAReB43RtRd6u0irzM75OfuXjdb5Xs9RdAMSwoieMLW7ic1%2Bjsd1djK0Ay)
