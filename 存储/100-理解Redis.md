@@ -125,6 +125,9 @@ S对输入缓冲区中的命令请求进行分析，提取出命令请求中包�
 详情请参看[理解Redis内存管理策略](https://github.com/chungwei/imiao/blob/master/存储/103-理解Redis内存管理策略.md)
 
 ## 经典案例分析和最佳实践
+### mc和Redis选型
+老生常谈的话题，看业务场景和团队情况吧。
+
 ### 热key解决方案
 比如某个热点新闻出现，很有可能会产生热key。
 
@@ -152,7 +155,7 @@ S对输入缓冲区中的命令请求进行分析，提取出命令请求中包�
 - 位图：适合统计用户在某段时间内签到了多少天
 - HyperLogLog：适合统计某页面当天的UV，因为有去重逻辑，但不精确
 
-> 【提问：[拼多多面试真题：如何用Redis统计独立用户访问量](https://zhuanlan.zhihu.com/p/69425231)】
+> 【提问：[拼多多面试真题：如何用Redis统计独立用户访问量](https://zhuanlan.zhihu.com/p/69425231)】  
 > 【提问：[面试题之redis实现限制1小时内每用户Id最多只能登录5次](https://www.cnblogs.com/wujf/p/5206354.html)】
 
 ### 海量数据存储
@@ -208,7 +211,6 @@ S对输入缓冲区中的命令请求进行分析，提取出命令请求中包�
 #### 分布式高可用
 详情请参看[Redis分布式高可用架构](https://github.com/chungwei/imiao/blob/master/存储/104-Redis分布式高可用架构.md)
 
-
 ## 参考资料
 1. [热点Key的发现与解决之道](https://yq.aliyun.com/articles/404817)
 1. [如何发现Redis热点Key，解决方案有哪些？](https://mp.weixin.qq.com/s?__biz=MzUyNDkzNzczNQ==&mid=2247486805&idx=1&sn=55dd5c2d296b097470fbde17a4e3c3d6&chksm=fa24f23dcd537b2b0a7eef2e20f604980adc58fdc066324bf7eed35ab156e38f87c3166bce7f&scene=21#wechat_redirect)
@@ -218,3 +220,6 @@ S对输入缓冲区中的命令请求进行分析，提取出命令请求中包�
 1. [缓存穿透，缓存击穿，缓存雪崩解决方案分析](https://blog.csdn.net/zeb_perfect/article/details/54135506)
 1. [Redis系列十：缓存雪崩、缓存穿透、缓存预热、缓存更新、缓存降级](https://www.cnblogs.com/leeSmall/p/8594542.html)
 1. [Hello Redis，我有7个问题想请教你](https://mp.weixin.qq.com/s?__biz=MzI1NDQ3MjQxNA==&mid=2247489614&idx=1&sn=803113aa84dfc6796bc93b73903d845d&chksm=e9c5e1ffdeb268e9899349abd769e3459b8dc33f225379c8fa10b55abafa12b8f0b477b45b2c&mpshare=1&scene=24&srcid=&key=51937ec95710ec63deca9e2191d31f40f932318dc82b6ff31b346a33b5908f0cdfd64453e36343259eadee65380a3c392f7a91ec8f54666dad0ea01c3e14b49f9070796e0f7008684968518a3d369794&ascene=0&uin=Nzc3MzQ2MTgy&nettype=WIFI&lang=zh_CN&fontScale=100&pass_ticket=6AHO5gBAReB43RtRd6u0irzM75OfuXjdb5Xs9RdAMSwoieMLW7ic1%2Bjsd1djK0Ay)
+2. [Redis 总体结构图](http://www.okyes.me/2016/07/18/redis-1.html)
+3. [选redis还是memcache，源码怎么说？](https://mp.weixin.qq.com/s?__biz=MjM5ODYxMDA5OQ==&mid=2651961272&idx=1&sn=79ad515b013b0ffc33324db86ba0f834&chksm=bd2d02648a5a8b728db094312f55574ec521b30e3de8aacf1d2d948a3ac24dbf30e835089fa7&scene=21#wechat_redirect)
+1. 

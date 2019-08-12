@@ -18,15 +18,6 @@
 ## 其他
 1. [记住，永远不要在MySQL中使用“utf8”](http://www.infoq.com/cn/articles/in-mysql-never-use-utf8-use-utf8?utm_campaign=rightbar_v2&utm_source=infoq&utm_medium=articles_link&utm_content=link_text)
 
-1. []()
-1. []()
-1. []()
-1. []()
 
 # DBProxy
-
-# Redis
-
-# Codis
-
 
