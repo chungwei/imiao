@@ -2,7 +2,7 @@
 
 ## 排序
 ### 冒泡排序
-1. [912. 排序数组](https://leetcode-cn.com/problems/sort-an-array/) [ x ]
+1. [912. 排序数组](https://leetcode-cn.com/problems/sort-an-array/)
 
 ### 快速排序
 
