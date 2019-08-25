@@ -51,20 +51,23 @@ func main() {
 // 冒泡
 func bSort(nums []int) []int {
 	l := len(nums)
+	if l <= 1 {
+		return nums
+	}
+
 	for i := 0; i < l-1; i++ {
-		f := false
+		f := true
 		for j := 0; j < l-i-1; j++ {
 			if nums[j] > nums[j+1] {
-				t := nums[j+1]
-				nums[j+1] = nums[j]
-				nums[j] = t
-				f = true
+				nums[j], nums[j+1] = nums[j+1], nums[j]
+				f = false
 			}
 		}
-		if !f {
+		if f {
 			break
 		}
 	}
+
 	return nums
 }
 
@@ -79,26 +82,25 @@ func bSort(nums []int) []int {
 找到符合条件的值，进行交换的时候i， j指针位置不变。
 另外，i==j这一过程一定正好是i+或j-完成的时候，此时令循环结束）。
 */
-func qSort(nums []int, left, right int) []int {
-	if left >= right {
-		return nums
+func qSort(n []int, left, right int) []int {
+	if left > right {
+		return n
 	}
-	// 将大于k的都放在右边，小于的，都放在左边
-	i, j, k := left, right, nums[left]
+
+	k, i, j := n[left], left, right
 	for i < j {
-		// 如果flag从左边开始，那么是必须先从有右边开始比较，也就是先在右边找比flag小的
-		for i < j && nums[j] >= k {
+		for i < j && n[j] >= k {
 			j--
 		}
-		nums[i] = nums[j]
-		for i < j && nums[i] <= k {
+		n[i] = n[j]
+
+		for i < j && n[i] <= k {
 			i++
 		}
-		nums[j] = nums[i]
+		n[j] = n[i]
 	}
-	nums[i] = k
-	qSort(nums, left, i-1)
-	qSort(nums, i+1, right)
-
-	return nums
+	n[i] = k
+	qSort(n, left, i-1)
+	qSort(n, i+1, right)
+	return n
 }
