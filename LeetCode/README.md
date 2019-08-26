@@ -28,5 +28,5 @@
 # 其他
 ## 头条
 1. [42. 接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)
-1. [135. 分发糖果](https://leetcode-cn.com/problems/candy/solution/fen-fa-tang-guo-by-leetcode/)
+1. [135. 分发糖果](https://leetcode-cn.com/problems/candy/)
 
