@@ -31,7 +31,7 @@ func main() {
 
 	fmt.Println(isPowerOfTwo1(1))
 	fmt.Println(isPowerOfTwo1(16))
-	fmt.Println(isPowerOfTwo1(218))
+	fmt.Println(isPowerOfTwo1(4096 * 4096 * 4096 * 4096 * 4096))
 }
 
 func isPowerOfTwo(n int) bool {
