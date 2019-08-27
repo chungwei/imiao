@@ -47,6 +47,12 @@ func main() {
 	fmt.Println(candy(n))
 	fmt.Println(`-----------------------------`)
 
+	// 链表
+	list := initList(9)
+	printList(list)
+	list = reverseList(list)
+	printList(list)
+
 }
 
 // 冒泡排序
@@ -219,4 +225,58 @@ func candy(ratings []int) int {
 	}
 
 	return sum
+}
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func initList(n int) *ListNode {
+	head := new(ListNode)
+	tmp := head
+	for i := 1; i <= n; i++ {
+		node := new(ListNode)
+		node.Val = i
+		node.Next = nil
+		tmp.Val = i
+		tmp.Next = new(ListNode)
+		tmp = tmp.Next
+	}
+	tmp.Next = nil
+	return head
+}
+
+func printList(list *ListNode) {
+	if list == nil {
+		fmt.Println(`nil`)
+		return
+	}
+	for list != nil {
+		fmt.Print(list.Val)
+		list = list.Next
+	}
+	fmt.Println(``)
+}
+
+func reverseList(list *ListNode) *ListNode {
+	if list == nil || list.Next == nil {
+		return list
+	}
+
+	pre, next := new(ListNode), new(ListNode)
+	for list != nil {
+		next = list.Next
+		list.Next = pre
+		pre = list
+		list = next
+	}
+
+	return pre
+}
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
 }
