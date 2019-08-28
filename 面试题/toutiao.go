@@ -47,6 +47,20 @@ func main() {
 	fmt.Println(candy(n))
 	fmt.Println(`-----------------------------`)
 
+	list := initList(6)
+	printList(list)
+	list = reverseList(list)
+	printList(list)
+	list = delNode(list, 3)
+	printList(list)
+	list = delNode(list, 1)
+	printList(list)
+	list = delNode(list, 6)
+	printList(list)
+	fmt.Println(`-----------------------------`)
+	fmt.Println(`-----------------------------`)
+	fmt.Println(`-----------------------------`)
+
 }
 
 // 冒泡排序
@@ -218,4 +232,69 @@ func candy(ratings []int) int {
 	}
 
 	return sum
+}
+
+type ListNode struct {
+	Val  int
+	Next *ListNode
+}
+
+func initList(n int) *ListNode {
+	head := new(ListNode)
+	tmp := head
+	for i := 1; i <= n; i++ {
+		node := new(ListNode)
+		node.Val = i
+
+		tmp.Next = node
+		tmp = node
+	}
+	return head.Next
+}
+
+func printList(list *ListNode) {
+	for list != nil {
+		fmt.Print(list.Val, " ")
+		list = list.Next
+	}
+	fmt.Println(``)
+}
+
+func reverseList(list *ListNode) *ListNode {
+	if list == nil || list.Next == nil {
+		return list
+	}
+	var pre, next *ListNode
+	for list != nil {
+		next = list.Next
+		list.Next = pre
+		pre = list
+		list = next
+	}
+	return pre
+}
+
+func delNode(list *ListNode, n int) *ListNode {
+	if list == nil || list.Next == nil {
+		return list
+	}
+	head := list
+	for list != nil {
+		if n != list.Val {
+			list = list.Next
+			continue
+		}
+		if list.Next == nil {
+			fmt.Println(&list, list, list.Val)
+
+			list = nil
+			fmt.Println(&list, list)
+
+			break
+		}
+		list.Val = list.Next.Val
+		list.Next = list.Next.Next
+
+	}
+	return head
 }
