@@ -1,3 +1,6 @@
+# 概述
+LeetCode Golang 实现
+
 # 排序
 ## 冒泡排序、快速排序
 1. [912. 排序数组](https://leetcode-cn.com/problems/sort-an-array/)

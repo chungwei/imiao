@@ -47,6 +47,7 @@ func main() {
 	fmt.Println(candy(n))
 	fmt.Println(`-----------------------------`)
 
+	// 链表
 	list := initList(6)
 	printList(list)
 	list = reverseList(list)
@@ -105,8 +106,8 @@ func qSort(nums []int, left, right int) []int {
 		nums[j] = nums[i]
 	}
 	nums[i] = k
-	qSort(nums, i+1, right)
 	qSort(nums, left, i-1)
+	qSort(nums, i+1, right)
 	return nums
 }
 
@@ -150,16 +151,17 @@ func rain(height []int) int {
 	if l < 3 {
 		return 0
 	}
+
 	max := 0
-	for i := 1; i < l; i++ {
-		if height[max] < height[i] {
-			max = i
+	for k, v := range height {
+		if height[max] < v {
+			max = k
 		}
 	}
 
 	t, sum := 0, 0
 	for i := 0; i <= max; i++ {
-		if t < height[i] {
+		if t <= height[i] {
 			t = height[i]
 		} else {
 			sum += t - height[i]
@@ -168,7 +170,7 @@ func rain(height []int) int {
 
 	t = 0
 	for i := l - 1; i >= max; i-- {
-		if t < height[i] {
+		if t <= height[i] {
 			t = height[i]
 		} else {
 			sum += t - height[i]
@@ -253,8 +255,12 @@ func initList(n int) *ListNode {
 }
 
 func printList(list *ListNode) {
+	if list == nil {
+		fmt.Println(`nil`)
+		return
+	}
 	for list != nil {
-		fmt.Print(list.Val, " ")
+		fmt.Print(list.Val)
 		list = list.Next
 	}
 	fmt.Println(``)
@@ -297,4 +303,10 @@ func delNode(list *ListNode, n int) *ListNode {
 
 	}
 	return head
+}
+
+type TreeNode struct {
+	Val   int
+	Left  *TreeNode
+	Right *TreeNode
 }
