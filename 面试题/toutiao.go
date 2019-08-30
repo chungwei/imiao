@@ -48,17 +48,44 @@ func main() {
 	fmt.Println(`-----------------------------`)
 
 	// 链表
+	fmt.Print(`链表初始化：`)
 	list := initList(6)
 	printList(list)
+
+	fmt.Print(`链表反转：`)
 	list = reverseList(list)
 	printList(list)
+
+	fmt.Print(`链表删除中间：`)
 	list = delNode(list, 3)
 	printList(list)
-	list = delNode(list, 1)
-	printList(list)
+
+	fmt.Print(`链表删除头：`)
 	list = delNode(list, 6)
 	printList(list)
+
+	fmt.Print(`链表删除尾：`)
+	list = delNode(list, 1)
+	printList(list)
 	fmt.Println(`-----------------------------`)
+
+	// 二叉树
+	tree := initTree()
+	fmt.Print(`先序：`)
+	preOrder(tree)
+	fmt.Println(``)
+	preOrder1(tree)
+
+	fmt.Print(`中序：`)
+	inOrder(tree)
+	fmt.Println(``)
+	inOrder1(tree)
+
+	fmt.Print(`后序：`)
+	postOrder(tree)
+	fmt.Println(``)
+	postOrder1(tree)
+
 	fmt.Println(`-----------------------------`)
 	fmt.Println(`-----------------------------`)
 
@@ -244,21 +271,23 @@ type ListNode struct {
 func initList(n int) *ListNode {
 	head := new(ListNode)
 	tmp := head
-	for i := 1; i <= n; i++ {
-		node := new(ListNode)
-		node.Val = i
 
+	for i := 1; i <= n; i++ {
+		node := &ListNode{i, nil}
 		tmp.Next = node
 		tmp = node
 	}
+
 	return head.Next
+
 }
 
 func printList(list *ListNode) {
 	if list == nil {
-		fmt.Println(`nil`)
+		fmt.Print(`nil`)
 		return
 	}
+
 	for list != nil {
 		fmt.Print(list.Val)
 		list = list.Next
@@ -281,26 +310,25 @@ func reverseList(list *ListNode) *ListNode {
 }
 
 func delNode(list *ListNode, n int) *ListNode {
-	if list == nil || list.Next == nil {
+	if list == nil {
 		return list
 	}
+	if list.Val == n { // 删除头
+		return list.Next
+	}
 	head := list
-	for list != nil {
-		if n != list.Val {
-			list = list.Next
-			continue
-		}
-		if list.Next == nil {
-			fmt.Println(&list, list, list.Val)
-
-			list = nil
-			fmt.Println(&list, list)
-
+	for list.Next != nil {
+		if list.Next.Val == n {
+			if list.Next.Next == nil { // 删除尾
+				list.Next = nil
+				break
+			}
+			// 删除中间
+			list.Next.Val = list.Next.Next.Val
+			list.Next.Next = list.Next.Next.Next
 			break
 		}
-		list.Val = list.Next.Val
-		list.Next = list.Next.Next
-
+		list = list.Next
 	}
 	return head
 }
@@ -309,4 +337,118 @@ type TreeNode struct {
 	Val   int
 	Left  *TreeNode
 	Right *TreeNode
+}
+
+func initTree() *TreeNode {
+	root := new(TreeNode)
+	root.Val = 10
+
+	root.Left = &TreeNode{8, nil, nil}
+	root.Left.Left = &TreeNode{6, nil, nil}
+	root.Left.Right = &TreeNode{9, nil, nil}
+
+	root.Right = &TreeNode{12, nil, nil}
+	root.Right.Right = &TreeNode{17, nil, nil}
+
+	return root
+}
+
+func preOrder(root *TreeNode) {
+	if root == nil {
+		return
+	}
+	fmt.Print(root.Val, `->`)
+	preOrder(root.Left)
+	preOrder(root.Right)
+}
+func preOrder1(root *TreeNode) {
+	if root == nil {
+		return
+	}
+	var stack []*TreeNode
+	//stack = append(stack, root)
+	for root != nil || len(stack) > 0 {
+		if root != nil {
+			fmt.Print(root.Val, `->`)
+			stack = append(stack, root)
+			root = root.Left
+		} else {
+			root = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			root = root.Right
+		}
+	}
+	fmt.Println(``)
+}
+
+func inOrder(root *TreeNode) {
+	if root == nil {
+		return
+	}
+	inOrder(root.Left)
+	fmt.Print(root.Val, `->`)
+	inOrder(root.Right)
+}
+
+func inOrder1(root *TreeNode) {
+	if root == nil {
+		return
+	}
+	var stack []*TreeNode
+	//stack = append(stack, root)
+	for root != nil || len(stack) > 0 {
+		if root != nil {
+			stack = append(stack, root)
+			root = root.Left
+		} else {
+			root = stack[len(stack)-1]
+			fmt.Print(root.Val, `->`)
+			stack = stack[:len(stack)-1]
+			root = root.Right
+		}
+	}
+	fmt.Println(``)
+}
+
+func postOrder(root *TreeNode) {
+	if root == nil {
+		return
+	}
+	postOrder(root.Left)
+	postOrder(root.Right)
+	fmt.Print(root.Val, `->`)
+}
+
+func postOrder1(root *TreeNode) {
+	if root == nil {
+		return
+	}
+	var stack []*TreeNode
+	var list []int
+	for root != nil || len(stack) > 0 {
+		if root != nil {
+			list = append([]int{root.Val}, list...)
+			stack = append(stack, root)
+			root = root.Right
+		} else {
+			root = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			root = root.Left
+		}
+	}
+	fmt.Println(list)
+}
+
+func levelOrder(root *TreeNode) {
+	if root == nil {
+		return
+	}
+
+}
+
+func levelOrder1(root *TreeNode) {
+	if root == nil {
+		return
+	}
+
 }

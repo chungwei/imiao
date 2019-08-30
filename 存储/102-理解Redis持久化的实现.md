@@ -94,6 +94,9 @@ Linux的glibc提供了fsync(int fd)函数可以将指定文件的内容强制从
 Redis重启时，先加载RDB，再重放增量AOF日志就可以完全替代之前的AOF全量文件重放，重启效率因此大幅得到提升。如下图所示：  
 ![IMAGE](resources/74A67A385A55EC0E7F30FC6AF825498E.jpg)
 
+> Q：从上文可以发现，整个持久化过程都是fork子进程实现的，那为什么不是使用进程里的线程呢？
+> A：如果使用线程实现，将会造成主进程的阻塞，导致无法响应客户端的请求；同时，主进程内的多线程之间会造成数据资源的竞争，影响性能。
+
 ## 参考资料
 1. [Redis 持久化之RDB和AOF](https://www.cnblogs.com/itdragon/p/7906481.html)
 1. [Redis高可用详解：持久化技术及方案选择](https://mp.weixin.qq.com/s?__biz=MzI4NTA1MDEwNg==&mid=2650769300&idx=1&sn=49a11efa1a6ee605fceaddf240a55c40&chksm=f3f93201c48ebb175fa76053d95e315b621485b0e65e42d8b41fe91b8f859c9278f3adec7ca9&mpshare=1&scene=24&srcid=0805ok2Of0Ej1GBWZh4lo2eL&key=51937ec95710ec633912c580a44c27be4494e5c93e80e609581f44cb9c3490788abf6b541f388119a99d87fe9dcba0d5e61fa294782e6c57ae0217a16ca8f9fa6199169b4dbb610580dda737b009abb3&ascene=0&uin=Nzc3MzQ2MTgy)
