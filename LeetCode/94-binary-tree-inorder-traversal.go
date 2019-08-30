@@ -31,36 +31,38 @@ https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
 */
 func main() {
 
-	root := new(TreeNode)
+	root := new(TreeNode1)
 	root.Val = 1
 
 	root.Left = nil
 
-	node := new(TreeNode)
+	node := new(TreeNode1)
 	node.Val = 2
 	node.Right = nil
 
 	root.Right = node
 
-	node = new(TreeNode)
+	node = new(TreeNode1)
 	node.Val = 3
 	node.Left = nil
 	node.Right = nil
 
 	root.Right.Left = node
 
-	fmt.Println(`二叉树的前序遍历：`)
-	fmt.Println(preorderTraversal(root))
-	fmt.Println(preorderTraversal1(root))
-
 	fmt.Println(`二叉树的中序遍历：`)
 	fmt.Println(inorderTraversal(root))
-	fmt.Println(inorderTraversal(root))
+	fmt.Println(inorderTraversal1(root))
 
 }
 
+type TreeNode1 struct {
+	Val   int
+	Left  *TreeNode1
+	Right *TreeNode1
+}
+
 // 中序遍历递归实现
-func inorderTraversal(root *TreeNode) []int {
+func inorderTraversal(root *TreeNode1) []int {
 	if root == nil {
 		return []int{}
 	}
@@ -78,13 +80,13 @@ func inorderTraversal(root *TreeNode) []int {
 }
 
 // 中序遍历非递归实现
-func inorderTraversal1(root *TreeNode) []int {
+func inorderTraversal1(root *TreeNode1) []int {
 	if root == nil {
 		return []int{}
 	}
 
 	var ret []int
-	var stack []TreeNode
+	var stack []TreeNode1
 	for root != nil || len(stack) > 0 {
 		if root != nil {
 			stack = append(stack, *root)

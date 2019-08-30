@@ -1,5 +1,7 @@
 package main
 
+import "fmt"
+
 /**
 144. 二叉树的前序遍历
 94. 二叉树的中序遍历
@@ -29,28 +31,37 @@ https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
 */
 func main() {
 
-	//root := new(TreeNode)
-	//root.Val = 1
-	//
-	//root.Left = nil
-	//
-	//node := new(TreeNode)
-	//node.Val = 2
-	//node.Right = nil
-	//
-	//root.Right = node
-	//
-	//node = new(TreeNode)
-	//node.Val = 3
-	//node.Left = nil
-	//node.Right = nil
-	//
-	//root.Right.Left = node
+	root := new(TreeNode12)
+	root.Val = 1
 
+	root.Left = nil
+
+	node := new(TreeNode12)
+	node.Val = 2
+	node.Right = nil
+
+	root.Right = node
+
+	node = new(TreeNode12)
+	node.Val = 3
+	node.Left = nil
+	node.Right = nil
+
+	root.Right.Left = node
+
+	fmt.Println(`二叉树的后序遍历：`)
+	fmt.Println(postorderTraversal(root))
+	fmt.Println(postorderTraversal1(root))
+}
+
+type TreeNode12 struct {
+	Val   int
+	Left  *TreeNode12
+	Right *TreeNode12
 }
 
 // 后序遍历递归实现
-func postorderTraversal(root *TreeNode) []int {
+func postorderTraversal(root *TreeNode12) []int {
 	if root == nil {
 		return []int{}
 	}
@@ -68,13 +79,13 @@ func postorderTraversal(root *TreeNode) []int {
 }
 
 // 后序遍历非递归实现
-func postorderTraversal1(root *TreeNode) []int {
+func postorderTraversal1(root *TreeNode12) []int {
 	if root == nil {
 		return []int{}
 	}
 
 	var ret []int
-	var stack []TreeNode
+	var stack []TreeNode12
 	for root != nil || len(stack) > 0 {
 		if root != nil {
 			t := []int{root.Val}

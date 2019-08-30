@@ -72,12 +72,7 @@ func preorderTraversal(root *TreeNode) []int {
 		return []int{}
 	}
 
-	if root == nil {
-		return []int{}
-	}
-
 	ret := []int{}
-
 	ret = append(ret, root.Val)
 
 	l := preorderTraversal(root.Left)
