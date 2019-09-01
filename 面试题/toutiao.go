@@ -72,9 +72,14 @@ func main() {
 	list = delNode(list, 1)
 	printList(list)
 
+	fmt.Print(`链表k个反转：`)
+	list = reverseKGroup(list, 3)
+	printList(list)
+
 	fmt.Print(`链表删除尾：`)
 	list = delNode(list, 7)
 	printList(list)
+
 	fmt.Println(`-----------------------------`)
 
 	// 二叉树
@@ -379,6 +384,40 @@ func addList2(l1, l2 *ListNode) *ListNode {
 	}
 
 	return head.Next
+}
+
+func reverseKGroup(head *ListNode, k int) *ListNode {
+	if head == nil || head.Next == nil || k == 1 {
+		return head
+	}
+
+	list := new(ListNode)
+	tmp := list
+	for {
+		cnt := k
+		stack := []*ListNode{}
+		t := head
+		for t != nil && cnt > 0 {
+			stack = append(stack, t)
+			t = t.Next
+			cnt--
+		}
+		if cnt > 0 { // 说明不足k个
+			tmp.Next = head
+			break
+		}
+		for len(stack) > 0 {
+			tmp.Next = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			tmp = tmp.Next
+		}
+
+		tmp.Next = t
+		head = t
+	}
+
+	return list.Next
+
 }
 
 type TreeNode struct {
