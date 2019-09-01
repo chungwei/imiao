@@ -386,6 +386,18 @@ func addList2(l1, l2 *ListNode) *ListNode {
 	return head.Next
 }
 
+/**
+用栈，我们把 k 个数压入栈中，然后弹出来的顺序就是翻转的！
+
+这里要注意几个问题：
+第一，剩下的链表个数够不够 k 个（因为不够 k 个不用翻转）；
+第二，已经翻转的部分要与剩下链表连接起来
+
+作者：powcai
+链接：https://leetcode-cn.com/problems/reverse-nodes-in-k-group/solution/kge-yi-zu-fan-zhuan-lian-biao-by-powcai/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+*/
 func reverseKGroup(head *ListNode, k int) *ListNode {
 	if head == nil || head.Next == nil || k == 1 {
 		return head
