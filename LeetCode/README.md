@@ -30,6 +30,8 @@ LeetCode Golang 实现
 
 # 其他
 ## 头条
+1. [2. 两数相加](https://leetcode-cn.com/problems/add-two-numbers/)
+1. [25. K 个一组翻转链表](https://leetcode-cn.com/problems/reverse-nodes-in-k-group)
 1. [42. 接雨水](https://leetcode-cn.com/problems/trapping-rain-water/)
 1. [135. 分发糖果](https://leetcode-cn.com/problems/candy/)
-
+1. [445. 两数相加 II](https://leetcode-cn.com/problems/add-two-numbers-ii)
