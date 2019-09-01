@@ -49,23 +49,31 @@ func main() {
 
 	// 链表
 	fmt.Print(`链表初始化：`)
-	list := initList(6)
+	list := initList(2, 5)
 	printList(list)
 
 	fmt.Print(`链表反转：`)
-	list = reverseList(list)
-	printList(list)
+	list1 := reverseList(list)
+	printList(list1)
 
+	fmt.Print(`链表相加：`)
+	list2 := initList(5, 9)
+	list2.Val = 9
+	//list2 = reverseList(list2)
+	list3 := addList2(list1, list2)
+	printList(list3)
+
+	list = initList(1, 7)
 	fmt.Print(`链表删除中间：`)
 	list = delNode(list, 3)
 	printList(list)
 
 	fmt.Print(`链表删除头：`)
-	list = delNode(list, 6)
+	list = delNode(list, 1)
 	printList(list)
 
 	fmt.Print(`链表删除尾：`)
-	list = delNode(list, 1)
+	list = delNode(list, 7)
 	printList(list)
 	fmt.Println(`-----------------------------`)
 
@@ -268,11 +276,11 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func initList(n int) *ListNode {
+func initList(start, end int) *ListNode {
 	head := new(ListNode)
 	tmp := head
 
-	for i := 1; i <= n; i++ {
+	for i := start; i <= end; i++ {
 		node := &ListNode{i, nil}
 		tmp.Next = node
 		tmp = node
@@ -289,7 +297,7 @@ func printList(list *ListNode) {
 	}
 
 	for list != nil {
-		fmt.Print(list.Val)
+		fmt.Print(list.Val, "->")
 		list = list.Next
 	}
 	fmt.Println(``)
@@ -309,6 +317,19 @@ func reverseList(list *ListNode) *ListNode {
 	return pre
 }
 
+/**
+fmt.Print(`链表删除中间：`)
+list = delNode(list, 3)
+printList(list)
+
+fmt.Print(`链表删除头：`)
+list = delNode(list, 6)
+printList(list)
+
+fmt.Print(`链表删除尾：`)
+list = delNode(list, 1)
+printList(list)
+*/
 func delNode(list *ListNode, n int) *ListNode {
 	if list == nil {
 		return list
@@ -331,6 +352,33 @@ func delNode(list *ListNode, n int) *ListNode {
 		list = list.Next
 	}
 	return head
+}
+
+func addList2(l1, l2 *ListNode) *ListNode {
+	fmt.Println(``)
+	printList(l1)
+	printList(l2)
+	carry := 0
+	head := new(ListNode)
+	node := head
+	for l1 != nil || l2 != nil || carry > 0 {
+		sum := 0
+		if l1 != nil {
+			sum += l1.Val
+			l1 = l1.Next
+		}
+		if l2 != nil {
+			sum += l2.Val
+			l2 = l2.Next
+		}
+		sum += carry
+
+		node.Next = &ListNode{sum % 10, nil}
+		node = node.Next
+		carry = sum / 10
+	}
+
+	return head.Next
 }
 
 type TreeNode struct {
