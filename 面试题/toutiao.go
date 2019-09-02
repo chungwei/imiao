@@ -299,6 +299,7 @@ func reverseList(list *ListNode) *ListNode {
 	if list == nil || list.Next == nil {
 		return list
 	}
+
 	var pre, next *ListNode
 	for list != nil {
 		next = list.Next
@@ -306,6 +307,7 @@ func reverseList(list *ListNode) *ListNode {
 		pre = list
 		list = next
 	}
+
 	return pre
 }
 
@@ -363,13 +365,15 @@ func preOrder(root *TreeNode) {
 }
 func preOrder1(root *TreeNode) {
 	if root == nil {
+		fmt.Println(`nil`)
 		return
 	}
+
+	var ret []int
 	var stack []*TreeNode
-	//stack = append(stack, root)
 	for root != nil || len(stack) > 0 {
 		if root != nil {
-			fmt.Print(root.Val, `->`)
+			ret = append(ret, root.Val)
 			stack = append(stack, root)
 			root = root.Left
 		} else {
@@ -378,7 +382,7 @@ func preOrder1(root *TreeNode) {
 			root = root.Right
 		}
 	}
-	fmt.Println(``)
+	fmt.Println(ret)
 }
 
 func inOrder(root *TreeNode) {
@@ -392,22 +396,24 @@ func inOrder(root *TreeNode) {
 
 func inOrder1(root *TreeNode) {
 	if root == nil {
+		fmt.Println(`nil`)
 		return
 	}
+
+	var ret []int
 	var stack []*TreeNode
-	//stack = append(stack, root)
 	for root != nil || len(stack) > 0 {
 		if root != nil {
 			stack = append(stack, root)
 			root = root.Left
 		} else {
 			root = stack[len(stack)-1]
-			fmt.Print(root.Val, `->`)
+			ret = append(ret, root.Val)
 			stack = stack[:len(stack)-1]
 			root = root.Right
 		}
 	}
-	fmt.Println(``)
+	fmt.Println(ret)
 }
 
 func postOrder(root *TreeNode) {
@@ -421,14 +427,16 @@ func postOrder(root *TreeNode) {
 
 func postOrder1(root *TreeNode) {
 	if root == nil {
+		fmt.Println(`nil`)
 		return
 	}
+
+	var ret []int
 	var stack []*TreeNode
-	var list []int
 	for root != nil || len(stack) > 0 {
 		if root != nil {
-			list = append([]int{root.Val}, list...)
 			stack = append(stack, root)
+			ret = append([]int{root.Val}, ret...)
 			root = root.Right
 		} else {
 			root = stack[len(stack)-1]
@@ -436,7 +444,7 @@ func postOrder1(root *TreeNode) {
 			root = root.Left
 		}
 	}
-	fmt.Println(list)
+	fmt.Println(ret)
 }
 
 func levelOrder(root *TreeNode) {
