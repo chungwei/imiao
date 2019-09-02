@@ -6,8 +6,11 @@ import (
 
 func main() {
 	// 排序
+	fmt.Print(`冒泡：`)
 	n := []int{3, 4, 0, 6, 21, 1}
 	fmt.Println(bSort(n))
+
+	fmt.Print(`快排：`)
 	n = []int{3, 4, 0, 6, 21, 1}
 	fmt.Println(qSort(n, 0, len(n)-1))
 	fmt.Println(`-----------------------------`)
@@ -31,22 +34,24 @@ func main() {
 	fmt.Println(`-----------------------------`)
 
 	// 接雨水
+	fmt.Print(`接雨水：`)
 	n = []int{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}
 	fmt.Println(rain(n))
 	fmt.Println(rain1(n))
 	fmt.Println(`-----------------------------`)
 
 	// 分糖果
+	fmt.Print(`分糖果：`)
 	n = []int{1, 2, 2}
-	fmt.Println(candy(n))
+	fmt.Println(n, candy(n))
 	n = []int{1, 0, 2}
-	fmt.Println(candy(n))
+	fmt.Println(n, candy(n))
 	n = []int{1, 3, 2, 2, 1}
-	fmt.Println(candy(n))
+	fmt.Println(n, candy(n))
 	n = []int{1, 2, 87, 87, 87, 2, 1}
-	fmt.Println(candy(n))
+	fmt.Println(n, candy(n))
 	n = []int{1, 3, 4, 5, 2}
-	fmt.Println(candy(n))
+	fmt.Println(n, candy(n))
 	fmt.Println(`-----------------------------`)
 
 	// 链表
@@ -140,12 +145,11 @@ func qSort(nums []int, left, right int) []int {
 
 	i, j, k := left, right, nums[left]
 	for i < j {
-		for i < j && nums[j] >= k {
+		for i < j && k <= nums[j] {
 			j--
 		}
 		nums[i] = nums[j]
-
-		for i < j && nums[i] <= k {
+		for i < j && k >= nums[i] {
 			i++
 		}
 		nums[j] = nums[i]
@@ -192,19 +196,18 @@ func bSearch1(nums []int, left, right, target int) int {
 
 // 接雨水
 func rain(height []int) int {
-	l := len(height)
+	sum, l := 0, len(height)
 	if l < 3 {
-		return 0
+		return sum
 	}
 
-	max := 0
+	max, t := 0, 0
 	for k, v := range height {
 		if height[max] < v {
 			max = k
 		}
 	}
 
-	t, sum := 0, 0
 	for i := 0; i <= max; i++ {
 		if t <= height[i] {
 			t = height[i]
@@ -257,8 +260,12 @@ func rain1(height []int) int {
 
 // 分糖果
 func candy(ratings []int) int {
-	l := len(ratings)
-	c, sum := make([]int, l), 0
+	sum, l := 0, len(ratings)
+	if l == 0 {
+		return sum
+	}
+
+	c := make([]int, l)
 	for i := 0; i < l; i++ {
 		c[i] = 1
 	}
@@ -274,10 +281,10 @@ func candy(ratings []int) int {
 			c[i-1] = c[i] + 1
 		}
 	}
-	for _, v := range c {
-		sum += v
-	}
 
+	for i := 0; i < l; i++ {
+		sum += c[i]
+	}
 	return sum
 }
 
@@ -483,8 +490,8 @@ func preOrder1(root *TreeNode) {
 			root = root.Left
 		} else {
 			root = stack[len(stack)-1]
-			stack = stack[:len(stack)-1]
 			root = root.Right
+			stack = stack[:len(stack)-1]
 		}
 	}
 	fmt.Println(ret)
@@ -514,8 +521,8 @@ func inOrder1(root *TreeNode) {
 		} else {
 			root = stack[len(stack)-1]
 			ret = append(ret, root.Val)
-			stack = stack[:len(stack)-1]
 			root = root.Right
+			stack = stack[:len(stack)-1]
 		}
 	}
 	fmt.Println(ret)
@@ -540,13 +547,13 @@ func postOrder1(root *TreeNode) {
 	var stack []*TreeNode
 	for root != nil || len(stack) > 0 {
 		if root != nil {
-			stack = append(stack, root)
 			ret = append([]int{root.Val}, ret...)
+			stack = append(stack, root)
 			root = root.Right
 		} else {
 			root = stack[len(stack)-1]
-			stack = stack[:len(stack)-1]
 			root = root.Left
+			stack = stack[:len(stack)-1]
 		}
 	}
 	fmt.Println(ret)
