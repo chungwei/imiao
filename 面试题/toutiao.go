@@ -49,24 +49,37 @@ func main() {
 
 	// 链表
 	fmt.Print(`链表初始化：`)
-	list := initList(6)
+	list := initList(2, 5)
 	printList(list)
 
 	fmt.Print(`链表反转：`)
-	list = reverseList(list)
-	printList(list)
+	list1 := reverseList(list)
+	printList(list1)
 
+	fmt.Print(`链表相加：`)
+	list2 := initList(5, 9)
+	list2.Val = 9
+	//list2 = reverseList(list2)
+	list3 := addList2(list1, list2)
+	printList(list3)
+
+	list = initList(1, 7)
 	fmt.Print(`链表删除中间：`)
 	list = delNode(list, 3)
 	printList(list)
 
 	fmt.Print(`链表删除头：`)
-	list = delNode(list, 6)
+	list = delNode(list, 1)
+	printList(list)
+
+	fmt.Print(`链表k个反转：`)
+	list = reverseKGroup(list, 3)
 	printList(list)
 
 	fmt.Print(`链表删除尾：`)
-	list = delNode(list, 1)
+	list = delNode(list, 7)
 	printList(list)
+
 	fmt.Println(`-----------------------------`)
 
 	// 二叉树
@@ -268,11 +281,11 @@ type ListNode struct {
 	Next *ListNode
 }
 
-func initList(n int) *ListNode {
+func initList(start, end int) *ListNode {
 	head := new(ListNode)
 	tmp := head
 
-	for i := 1; i <= n; i++ {
+	for i := start; i <= end; i++ {
 		node := &ListNode{i, nil}
 		tmp.Next = node
 		tmp = node
@@ -289,7 +302,7 @@ func printList(list *ListNode) {
 	}
 
 	for list != nil {
-		fmt.Print(list.Val)
+		fmt.Print(list.Val, "->")
 		list = list.Next
 	}
 	fmt.Println(``)
@@ -311,6 +324,19 @@ func reverseList(list *ListNode) *ListNode {
 	return pre
 }
 
+/**
+fmt.Print(`链表删除中间：`)
+list = delNode(list, 3)
+printList(list)
+
+fmt.Print(`链表删除头：`)
+list = delNode(list, 6)
+printList(list)
+
+fmt.Print(`链表删除尾：`)
+list = delNode(list, 1)
+printList(list)
+*/
 func delNode(list *ListNode, n int) *ListNode {
 	if list == nil {
 		return list
@@ -333,6 +359,79 @@ func delNode(list *ListNode, n int) *ListNode {
 		list = list.Next
 	}
 	return head
+}
+
+func addList2(l1, l2 *ListNode) *ListNode {
+	fmt.Println(``)
+	printList(l1)
+	printList(l2)
+	carry := 0
+	head := new(ListNode)
+	node := head
+	for l1 != nil || l2 != nil || carry > 0 {
+		sum := 0
+		if l1 != nil {
+			sum += l1.Val
+			l1 = l1.Next
+		}
+		if l2 != nil {
+			sum += l2.Val
+			l2 = l2.Next
+		}
+		sum += carry
+
+		node.Next = &ListNode{sum % 10, nil}
+		node = node.Next
+		carry = sum / 10
+	}
+
+	return head.Next
+}
+
+/**
+用栈，我们把 k 个数压入栈中，然后弹出来的顺序就是翻转的！
+
+这里要注意几个问题：
+第一，剩下的链表个数够不够 k 个（因为不够 k 个不用翻转）；
+第二，已经翻转的部分要与剩下链表连接起来
+
+作者：powcai
+链接：https://leetcode-cn.com/problems/reverse-nodes-in-k-group/solution/kge-yi-zu-fan-zhuan-lian-biao-by-powcai/
+来源：力扣（LeetCode）
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。
+*/
+func reverseKGroup(head *ListNode, k int) *ListNode {
+	if head == nil || head.Next == nil || k == 1 {
+		return head
+	}
+
+	list := new(ListNode)
+	tmp := list
+	for {
+		cnt := k
+		stack := []*ListNode{}
+		t := head
+		for t != nil && cnt > 0 {
+			stack = append(stack, t)
+			t = t.Next
+			cnt--
+		}
+		if cnt > 0 { // 说明不足k个
+			tmp.Next = head
+			break
+		}
+		for len(stack) > 0 {
+			tmp.Next = stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			tmp = tmp.Next
+		}
+
+		tmp.Next = t
+		head = t
+	}
+
+	return list.Next
+
 }
 
 type TreeNode struct {
