@@ -1,6 +1,8 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+)
 
 func main() {
 	// 排序
@@ -100,6 +102,9 @@ func main() {
 	postOrder1(tree)
 
 	fmt.Println(`-----------------------------`)
+	ns := []node{{0, 0}, {0, 1}, {1, 1}, {1, 2}, {2, 2}, {2, 0}}
+	fmt.Println(cal(ns, 16))
+
 	fmt.Println(`-----------------------------`)
 
 }
@@ -462,6 +467,7 @@ func preOrder(root *TreeNode) {
 	preOrder(root.Left)
 	preOrder(root.Right)
 }
+
 func preOrder1(root *TreeNode) {
 	if root == nil {
 		fmt.Println(`nil`)
@@ -558,4 +564,66 @@ func levelOrder1(root *TreeNode) {
 		return
 	}
 
+}
+
+type node struct {
+	x float64
+	y float64
+}
+
+func cal(ns []node, k int) []node {
+	if len(ns) < 3 {
+		return []node{}
+	}
+	if k == 1 {
+		return ns
+	}
+	ns = append(ns, ns[0])
+	length := getLength(ns)
+	kline := length / float64(k)
+	fmt.Println(`cccc=`, length, kline, k)
+	var result []node
+	var leftlen float64
+	var curline = kline
+	for i := 1; i < len(ns); i++ {
+		nd := ns[i]
+		len := getLength(ns[i-1:i+1]) - leftlen
+		if len < curline {
+			curline -= len
+			continue
+		}
+		for leftlen+curline <= len {
+			data := node{nd.x, ns[i-1].y + ((leftlen+curline)/len)*(nd.y-ns[i-1].y)}
+			if nd.x != ns[i-1].x {
+				data = node{ns[i-1].x + ((leftlen+curline)/len)*(nd.x-ns[i-1].x), nd.y}
+			}
+			result = append(result, data)
+			leftlen += curline
+			curline = kline
+		}
+		leftlen -= len
+	}
+	return result
+}
+
+func getLength(ns []node) float64 {
+	var length float64
+	pre := ns[0]
+	for i := 1; i < len(ns); i++ {
+		nd := ns[i]
+		if nd.x == pre.x {
+			length += abs(nd.y - pre.y)
+		} else {
+			length += abs(nd.x - pre.x)
+		}
+		pre = nd
+	}
+	return length
+}
+
+func abs(a float64) float64 {
+	if a < 0 {
+		return -a
+	}
+	return a
 }
