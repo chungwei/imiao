@@ -6,52 +6,54 @@ import (
 
 func main() {
 	// 排序
-	fmt.Print(`冒泡：`)
 	n := []int{3, 4, 0, 6, 21, 1}
-	fmt.Println(bSort(n))
+	fmt.Println(`冒泡：`, `=>`, bSort(n))
 
-	fmt.Print(`快排：`)
-	n = []int{3, 4, 0, 6, 21, 1}
-	fmt.Println(qSort(n, 0, len(n)-1))
+	n = []int{3, 100, 0, 6, 21, 1}
+	fmt.Println(`快排：`, `=>`, qSort(n, 0, len(n)-1))
 	fmt.Println(`-----------------------------`)
 
 	// 二分查找
 	n = []int{0, 4, 6, 21, 100}
-	fmt.Println(bSearch(n, 0, len(n)-1, 0))
-	fmt.Println(bSearch(n, 0, len(n)-1, 21))
-	fmt.Println(bSearch(n, 0, len(n)-1, 100))
-	fmt.Println(bSearch(n, 0, len(n)-1, 1000))
-	fmt.Println(bSearch1(n, 0, len(n)-1, 0))
-	fmt.Println(bSearch1(n, 0, len(n)-1, 21))
-	fmt.Println(bSearch1(n, 0, len(n)-1, 100))
-	fmt.Println(bSearch1(n, 0, len(n)-1, 1000))
+	fmt.Println(`二分查找：`)
+	fmt.Println(n, `0 =>`, bSearch(n, 0, len(n)-1, 0))
+	fmt.Println(n, `21 =>`, bSearch(n, 0, len(n)-1, 21))
+	fmt.Println(n, `100 =>`, bSearch(n, 0, len(n)-1, 100))
+	fmt.Println(n, `1000 =>`, bSearch(n, 0, len(n)-1, 1000))
+	fmt.Println(n, `0 =>`, bSearch1(n, 0, len(n)-1, 0))
+	fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
+	fmt.Println(n, `100 =>`, bSearch1(n, 0, len(n)-1, 100))
+	fmt.Println(n, `1000 =>`, bSearch1(n, 0, len(n)-1, 1000))
 
 	n = []int{111}
-	fmt.Println(bSearch(n, 0, len(n)-1, 111))
-	fmt.Println(bSearch(n, 0, len(n)-1, 21))
-	fmt.Println(bSearch1(n, 0, len(n)-1, 111))
-	fmt.Println(bSearch1(n, 0, len(n)-1, 21))
+	fmt.Println(n, `111 =>`, bSearch(n, 0, len(n)-1, 111))
+	fmt.Println(n, `21 =>`, bSearch(n, 0, len(n)-1, 21))
+	fmt.Println(n, `111 =>`, bSearch1(n, 0, len(n)-1, 111))
+	fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
+
+	n = []int{}
+	fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
 	fmt.Println(`-----------------------------`)
 
 	// 接雨水
-	fmt.Print(`接雨水：`)
+	fmt.Println(`接雨水：`)
 	n = []int{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1}
-	fmt.Println(rain(n))
-	fmt.Println(rain1(n))
+	fmt.Println(n, `=>`, rain(n))
+	fmt.Println(n, `=>`, rain1(n))
 	fmt.Println(`-----------------------------`)
 
 	// 分糖果
-	fmt.Print(`分糖果：`)
+	fmt.Println(`分糖果：`)
 	n = []int{1, 2, 2}
-	fmt.Println(n, candy(n))
+	fmt.Println(n, `=>`, candy(n))
 	n = []int{1, 0, 2}
-	fmt.Println(n, candy(n))
+	fmt.Println(n, `=>`, candy(n))
 	n = []int{1, 3, 2, 2, 1}
-	fmt.Println(n, candy(n))
+	fmt.Println(n, `=>`, candy(n))
 	n = []int{1, 2, 87, 87, 87, 2, 1}
-	fmt.Println(n, candy(n))
+	fmt.Println(n, `=>`, candy(n))
 	n = []int{1, 3, 4, 5, 2}
-	fmt.Println(n, candy(n))
+	fmt.Println(n, `=>`, candy(n))
 	fmt.Println(`-----------------------------`)
 
 	// 链表
@@ -145,11 +147,11 @@ func qSort(nums []int, left, right int) []int {
 
 	i, j, k := left, right, nums[left]
 	for i < j {
-		for i < j && k <= nums[j] {
+		for i < j && nums[j] >= k {
 			j--
 		}
 		nums[i] = nums[j]
-		for i < j && k >= nums[i] {
+		for i < j && nums[i] <= k {
 			i++
 		}
 		nums[j] = nums[i]
@@ -163,16 +165,14 @@ func qSort(nums []int, left, right int) []int {
 // 二分查找递归实现
 func bSearch(nums []int, left, right, target int) int {
 	if left > right {
-		return -1
+		return -1 // 说明数组为空
 	}
-
 	mid := left + (right-left)/2
-	if nums[mid] > target {
-		return bSearch(nums, left, mid-1, target)
-	} else if nums[mid] < target {
+	if target > nums[mid] {
 		return bSearch(nums, mid+1, right, target)
+	} else if target < nums[mid] {
+		return bSearch(nums, left, mid-1, target)
 	}
-
 	return mid
 }
 
@@ -183,12 +183,12 @@ func bSearch1(nums []int, left, right, target int) int {
 	}
 	for left <= right {
 		mid := left + (right-left)/2
-		if target == nums[mid] {
-			return mid
-		} else if nums[mid] > target {
+		if target > nums[mid] {
+			left = mid + 1
+		} else if target < nums[mid] {
 			right = mid - 1
 		} else {
-			left = mid + 1
+			return mid
 		}
 	}
 	return -1
@@ -259,32 +259,32 @@ func rain1(height []int) int {
 }
 
 // 分糖果
-func candy(ratings []int) int {
-	sum, l := 0, len(ratings)
+func candy(r []int) int {
+	sum, l := 0, len(r)
 	if l == 0 {
 		return sum
 	}
-
 	c := make([]int, l)
 	for i := 0; i < l; i++ {
 		c[i] = 1
 	}
 
 	for i := 0; i < l-1; i++ {
-		if ratings[i] < ratings[i+1] && c[i+1] <= c[i] {
+		if r[i+1] > r[i] {
 			c[i+1] = c[i] + 1
 		}
 	}
 
 	for i := l - 1; i > 0; i-- {
-		if ratings[i-1] > ratings[i] && c[i-1] <= c[i] {
+		if r[i-1] > r[i] && c[i-1] <= c[i] {
 			c[i-1] = c[i] + 1
 		}
 	}
 
 	for i := 0; i < l; i++ {
-		sum += c[i]
+		sum = sum + c[i]
 	}
+
 	return sum
 }
 
@@ -332,7 +332,6 @@ func reverseList(list *ListNode) *ListNode {
 		pre = list
 		list = next
 	}
-
 	return pre
 }
 
@@ -377,24 +376,23 @@ func addList2(l1, l2 *ListNode) *ListNode {
 	fmt.Println(``)
 	printList(l1)
 	printList(l2)
-	carry := 0
 	head := new(ListNode)
-	node := head
-	for l1 != nil || l2 != nil || carry > 0 {
-		sum := 0
+	tmp := head
+	c := 0
+	for l1 != nil || l2 != nil || c > 0 {
+		s := c
 		if l1 != nil {
-			sum += l1.Val
+			s += l1.Val
 			l1 = l1.Next
 		}
 		if l2 != nil {
-			sum += l2.Val
+			s += l2.Val
 			l2 = l2.Next
 		}
-		sum += carry
+		tmp.Next = &ListNode{s % 10, nil}
+		tmp = tmp.Next
 
-		node.Next = &ListNode{sum % 10, nil}
-		node = node.Next
-		carry = sum / 10
+		c = s / 10
 	}
 
 	return head.Next
@@ -588,21 +586,19 @@ func cal(ns []node, k int) []node {
 	ns = append(ns, ns[0])
 	length := getLength(ns)
 	kline := length / float64(k)
-	fmt.Println(`cccc=`, length, kline, k)
 	var result []node
 	var leftlen float64
 	var curline = kline
 	for i := 1; i < len(ns); i++ {
-		nd := ns[i]
 		len := getLength(ns[i-1:i+1]) - leftlen
 		if len < curline {
 			curline -= len
 			continue
 		}
 		for leftlen+curline <= len {
-			data := node{nd.x, ns[i-1].y + ((leftlen+curline)/len)*(nd.y-ns[i-1].y)}
-			if nd.x != ns[i-1].x {
-				data = node{ns[i-1].x + ((leftlen+curline)/len)*(nd.x-ns[i-1].x), nd.y}
+			data := node{ns[i].x, ns[i-1].y + ((leftlen+curline)/len)*(ns[i].y-ns[i-1].y)}
+			if ns[i].x != ns[i-1].x {
+				data = node{ns[i-1].x + ((leftlen+curline)/len)*(ns[i].x-ns[i-1].x), ns[i].y}
 			}
 			result = append(result, data)
 			leftlen += curline
@@ -617,13 +613,12 @@ func getLength(ns []node) float64 {
 	var length float64
 	pre := ns[0]
 	for i := 1; i < len(ns); i++ {
-		nd := ns[i]
-		if nd.x == pre.x {
-			length += abs(nd.y - pre.y)
+		if ns[i].x == pre.x {
+			length += abs(ns[i].y - pre.y)
 		} else {
-			length += abs(nd.x - pre.x)
+			length += abs(ns[i].x - pre.x)
 		}
-		pre = nd
+		pre = ns[i]
 	}
 	return length
 }
