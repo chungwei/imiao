@@ -41,6 +41,7 @@ func main() {
 	fmt.Println(n, `=>`, rain(n))
 	fmt.Println(n, `=>`, rain1(n))
 	fmt.Println(`-----------------------------`)
+	return
 
 	// 分糖果
 	fmt.Println(`分糖果：`)
@@ -124,14 +125,16 @@ func bSort(nums []int) []int {
 	}
 
 	for i := 0; i < l-1; i++ {
-		fl := true
-		for j := 0; j < l-1-i; j++ {
+		f := true
+		for j := 0; j < l-i-1; j++ {
 			if nums[j] > nums[j+1] {
-				nums[j], nums[j+1] = nums[j+1], nums[j]
-				fl = false
+				t := nums[j]
+				nums[j] = nums[j+1]
+				nums[j+1] = t
+				f = false
 			}
 		}
-		if fl {
+		if f {
 			break
 		}
 	}
@@ -165,13 +168,14 @@ func qSort(nums []int, left, right int) []int {
 // 二分查找递归实现
 func bSearch(nums []int, left, right, target int) int {
 	if left > right {
-		return -1 // 说明数组为空
+		return -1
 	}
 	mid := left + (right-left)/2
-	if target > nums[mid] {
-		return bSearch(nums, mid+1, right, target)
-	} else if target < nums[mid] {
+
+	if nums[mid] > target {
 		return bSearch(nums, left, mid-1, target)
+	} else if nums[mid] < target {
+		return bSearch(nums, mid+1, right, target)
 	}
 	return mid
 }
@@ -183,12 +187,12 @@ func bSearch1(nums []int, left, right, target int) int {
 	}
 	for left <= right {
 		mid := left + (right-left)/2
-		if target > nums[mid] {
-			left = mid + 1
-		} else if target < nums[mid] {
+		if nums[mid] == target {
+			return mid
+		} else if nums[mid] > target {
 			right = mid - 1
 		} else {
-			return mid
+			left = mid + 1
 		}
 	}
 	return -1
@@ -196,8 +200,8 @@ func bSearch1(nums []int, left, right, target int) int {
 
 // 接雨水
 func rain(height []int) int {
-	sum, l := 0, len(height)
-	if l < 3 {
+	l, sum := len(height), 0
+	if l <= 2 {
 		return sum
 	}
 
@@ -229,13 +233,11 @@ func rain(height []int) int {
 }
 
 func rain1(height []int) int {
-	l := len(height)
-	if l < 3 {
-		return 0
+	l, sum, lt, rt := len(height), 0, 0, 0
+	if l <= 2 {
+		return sum
 	}
-
 	left, right := 0, l-1
-	lt, rt, sum := 0, 0, 0
 	for left < right {
 		if height[left] < height[right] {
 			if lt < height[left] {
@@ -252,7 +254,6 @@ func rain1(height []int) int {
 			}
 			right--
 		}
-
 	}
 
 	return sum
