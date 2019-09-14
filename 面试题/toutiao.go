@@ -57,61 +57,60 @@ func main() {
 	//fmt.Println(`-----------------------------`)
 
 	// 链表
-	fmt.Print(`链表初始化：`)
-	list := initList(11, 18)
-	printList(list)
-
-	fmt.Print(`链表反转：`)
-	list1 := reverseList(list)
-	printList(list1)
-
-	fmt.Println(`链表相加：`)
-	list2 := initList(5, 9)
-	list2.Val = 9
-	printList(list1)
-	printList(list2)
-	list3 := addList2(list1, list2)
-	printList(list3)
-
-	list = initList(1, 7)
-	fmt.Print(`链表删除中间：`)
-	list = delNode(list, 3)
-	printList(list)
-
-	fmt.Print(`链表删除头：`)
-	list = delNode(list, 1)
-	printList(list)
-
-	fmt.Print(`链表删除尾：`)
-	list = delNode(list, 7)
-	printList(list)
-	list = delNode(list, 6)
-	printList(list)
-
-	list = initList(1, 7)
-	fmt.Print(`链表k个反转：`)
-	list = reverseKGroup(list, 3)
-	printList(list)
-
-	fmt.Println(`-----------------------------`)
-	return
+	//fmt.Print(`链表初始化：`)
+	//list := initList(11, 18)
+	//printList(list)
+	//
+	//fmt.Print(`链表反转：`)
+	//list1 := reverseList(list)
+	//printList(list1)
+	//
+	//fmt.Println(`链表相加：`)
+	//list2 := initList(5, 9)
+	//list2.Val = 9
+	//printList(list1)
+	//printList(list2)
+	//list3 := addList2(list1, list2)
+	//printList(list3)
+	//
+	//list = initList(1, 7)
+	//fmt.Print(`链表删除中间：`)
+	//list = delNode(list, 3)
+	//printList(list)
+	//
+	//fmt.Print(`链表删除头：`)
+	//list = delNode(list, 1)
+	//printList(list)
+	//
+	//fmt.Print(`链表删除尾：`)
+	//list = delNode(list, 7)
+	//printList(list)
+	//list = delNode(list, 6)
+	//printList(list)
+	//
+	//list = initList(1, 7)
+	//fmt.Print(`链表k个反转：`)
+	//list = reverseKGroup(list, 3)
+	//printList(list)
+	//
+	//fmt.Println(`-----------------------------`)
 
 	// 二叉树
-	tree := initTree()
-	fmt.Print(`先序：`)
-	preOrder(tree)
-	fmt.Println(``)
-	preOrder1(tree)
-
-	fmt.Print(`中序：`)
-	inOrder(tree)
-	fmt.Println(``)
-	inOrder1(tree)
-
-	fmt.Print(`后序：`)
-	postOrder(tree)
-	fmt.Println(``)
-	postOrder1(tree)
+	//tree := initTree()
+	//fmt.Print(`先序：`)
+	//preOrder(tree)
+	//fmt.Println(``)
+	//preOrder1(tree)
+	//
+	//fmt.Print(`中序：`)
+	//inOrder(tree)
+	//fmt.Println(``)
+	//inOrder1(tree)
+	//
+	//fmt.Print(`后序：`)
+	//postOrder(tree)
+	//fmt.Println(``)
+	//postOrder1(tree)
 
 	fmt.Println(`-----------------------------`)
 	ns := []node{{0, 0}, {0, 1}, {1, 1}, {1, 2}, {2, 2}, {2, 0}}
@@ -572,21 +571,19 @@ func cal(ns []node, k int) []node {
 		return ns
 	}
 	ns = append(ns, ns[0])
+	fmt.Println(ns)
 	length := getLength(ns)
 	kline := length / float64(k)
 	var result []node
 	var leftlen float64
 	var curline = kline
+	fmt.Println(kline)
 	for i := 1; i < len(ns); i++ {
 		len := getLength(ns[i-1:i+1]) - leftlen
-		if len < curline {
-			curline -= len
-			continue
-		}
-		for leftlen+curline <= len {
-			data := node{ns[i].x, ns[i-1].y + ((leftlen+curline)/len)*(ns[i].y-ns[i-1].y)}
-			if ns[i].x != ns[i-1].x {
-				data = node{ns[i-1].x + ((leftlen+curline)/len)*(ns[i].x-ns[i-1].x), ns[i].y}
+		for leftlen+curline <= len && len >= curline {
+			data := node{ns[i-1].x + ((leftlen+curline)/len)*(ns[i].x-ns[i-1].x), ns[i].y}
+			if ns[i].x == ns[i-1].x {
+				data = node{ns[i].x, ns[i-1].y + ((leftlen+curline)/len)*(ns[i].y-ns[i-1].y)}
 			}
 			result = append(result, data)
 			leftlen += curline
@@ -608,6 +605,7 @@ func getLength(ns []node) float64 {
 		}
 		pre = ns[i]
 	}
+	fmt.Println(length, ns)
 	return length
 }
 

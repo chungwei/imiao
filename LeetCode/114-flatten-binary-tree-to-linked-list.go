@@ -48,7 +48,6 @@ func main() {
  * }
  */
 func flatten(root *TreeNode) {
-
 	if root == nil {
 		return
 	}
