@@ -1,4 +1,4 @@
-package main
+package db
 
 /**
 你是一个专业的小偷，计划偷窃沿街的房屋。
