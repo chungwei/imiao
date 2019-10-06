@@ -2,7 +2,7 @@
 LeetCode Golang 实现
 
 # 排序
-## 冒泡排序、快速排序
+包括冒泡排序、快速排序、选择排序、插入排序、归并排序
 1. [912. 排序数组](https://leetcode-cn.com/problems/sort-an-array/)
 
 # 查找

@@ -6,34 +6,34 @@ import (
 
 func main() {
 	// 排序
-	//n := []int{3, 4, 0, 6, 21, 1}
-	//fmt.Println(`冒泡：`, `=>`, bSort(n))
-	//
-	//n = []int{3, 100, 0, 6, 21, 1}
-	//fmt.Println(`快排：`, `=>`, qSort(n, 0, len(n)-1))
-	//fmt.Println(`-----------------------------`)
-	//
-	//// 二分查找
-	//n = []int{0, 4, 6, 21, 100}
-	//fmt.Println(`二分查找：`)
-	//fmt.Println(n, `0 =>`, bSearch(n, 0, len(n)-1, 0))
-	//fmt.Println(n, `21 =>`, bSearch(n, 0, len(n)-1, 21))
-	//fmt.Println(n, `100 =>`, bSearch(n, 0, len(n)-1, 100))
-	//fmt.Println(n, `1000 =>`, bSearch(n, 0, len(n)-1, 1000))
-	//fmt.Println(n, `0 =>`, bSearch1(n, 0, len(n)-1, 0))
-	//fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
-	//fmt.Println(n, `100 =>`, bSearch1(n, 0, len(n)-1, 100))
-	//fmt.Println(n, `1000 =>`, bSearch1(n, 0, len(n)-1, 1000))
-	//
-	//n = []int{111}
-	//fmt.Println(n, `111 =>`, bSearch(n, 0, len(n)-1, 111))
-	//fmt.Println(n, `21 =>`, bSearch(n, 0, len(n)-1, 21))
-	//fmt.Println(n, `111 =>`, bSearch1(n, 0, len(n)-1, 111))
-	//fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
-	//
-	//n = []int{}
-	//fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
-	//fmt.Println(`-----------------------------`)
+	n := []int{3, 4, 0, 6, 21, 1}
+	fmt.Println(`冒泡：`, `=>`, bSort(n))
+
+	n = []int{3, 100, 0, 6, 21, 1}
+	fmt.Println(`快排：`, `=>`, qSort(n, 0, len(n)-1))
+	fmt.Println(`-----------------------------`)
+
+	// 二分查找
+	n = []int{0, 4, 6, 21, 100}
+	fmt.Println(`二分查找：`)
+	fmt.Println(n, `0 =>`, bSearch(n, 0, len(n)-1, 0))
+	fmt.Println(n, `21 =>`, bSearch(n, 0, len(n)-1, 21))
+	fmt.Println(n, `100 =>`, bSearch(n, 0, len(n)-1, 100))
+	fmt.Println(n, `1000 =>`, bSearch(n, 0, len(n)-1, 1000))
+	fmt.Println(n, `0 =>`, bSearch1(n, 0, len(n)-1, 0))
+	fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
+	fmt.Println(n, `100 =>`, bSearch1(n, 0, len(n)-1, 100))
+	fmt.Println(n, `1000 =>`, bSearch1(n, 0, len(n)-1, 1000))
+
+	n = []int{111}
+	fmt.Println(n, `111 =>`, bSearch(n, 0, len(n)-1, 111))
+	fmt.Println(n, `21 =>`, bSearch(n, 0, len(n)-1, 21))
+	fmt.Println(n, `111 =>`, bSearch1(n, 0, len(n)-1, 111))
+	fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
+
+	n = []int{}
+	fmt.Println(n, `21 =>`, bSearch1(n, 0, len(n)-1, 21))
+	fmt.Println(`-----------------------------`)
 	//
 	//// 接雨水
 	//fmt.Println(`接雨水：`)
