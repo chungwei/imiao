@@ -20,25 +20,42 @@ import (
 链接：https://leetcode-cn.com/problems/two-sum
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
+
 func main() {
 	nums := []int{2, 7, 11, 15}
-	fmt.Println(twoSum(nums, 22))
+	fmt.Println(nums[2:2])
+	fmt.Println(twoSum1(nums, 10))
+	fmt.Println(twoSum2(nums, 9))
 }
 
-func twoSum(nums []int, target int) []int {
-	l := len(nums)
-	if l == 0 {
+// 暴力解决 O(n^2)
+func twoSum1(nums []int, target int) []int {
+	cnt := len(nums)
+	if cnt == 0 {
 		return []int{}
 	}
+
+	for i := 0; i < cnt-1; i++ {
+		t := target - nums[i]
+		for j := i + 1; j < cnt; j++ {
+			if t == nums[j] {
+				return []int{i, j}
+			}
+		}
+	}
+	return []int{}
+}
+
+// 空间换时间
+func twoSum2(nums []int, target int) []int {
 	m := make(map[int]int, len(nums))
 	for k, v := range nums {
 		m[v] = k
 	}
-
-	for k, v := range nums {
-		t := target - v
-		if i, ok := m[t]; ok && k != i {
-			return []int{k, i}
+	for i := 0; i < len(nums); i++ {
+		t := target - nums[i]
+		if _, ok := m[t]; ok && i != m[t] {
+			return []int{i, m[t]}
 		}
 	}
 

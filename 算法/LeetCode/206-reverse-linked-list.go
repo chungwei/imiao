@@ -39,13 +39,13 @@ func initList() *ListNode {
 	pl := head
 
 	for i := 1; i < 10; i++ {
-		pl.Val = i
-		pl.Next = new(ListNode)
-		pl = pl.Next
+		head.Val = i
+		head.Next = new(ListNode)
+		head = head.Next
 	}
-	pl.Next = nil
+	head.Next = nil
 
-	return head
+	return pl
 }
 
 func printList(head *ListNode) {
@@ -62,12 +62,7 @@ func reverseList(head *ListNode) *ListNode {
 
 	pre := new(ListNode)
 	t := new(ListNode)
-	/**
-		Temp = L->Next;
-	        L->Next = Prev;
-	        Prev = L;
-	        L = Temp;
-	*/
+
 	for head.Next != nil {
 		t = head.Next
 		head.Next = pre

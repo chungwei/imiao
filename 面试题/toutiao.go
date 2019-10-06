@@ -96,21 +96,24 @@ func main() {
 	//fmt.Println(`-----------------------------`)
 
 	// 二叉树
-	//tree := initTree()
-	//fmt.Print(`先序：`)
-	//preOrder(tree)
-	//fmt.Println(``)
-	//preOrder1(tree)
-	//
-	//fmt.Print(`中序：`)
-	//inOrder(tree)
-	//fmt.Println(``)
-	//inOrder1(tree)
-	//
-	//fmt.Print(`后序：`)
-	//postOrder(tree)
-	//fmt.Println(``)
-	//postOrder1(tree)
+	tree := initTree()
+	fmt.Print(`先序：`)
+	preOrder(tree)
+	fmt.Println(``)
+	preOrder1(tree)
+
+	fmt.Print(`中序：`)
+	inOrder(tree)
+	fmt.Println(``)
+	inOrder1(tree)
+
+	fmt.Print(`后序：`)
+	postOrder(tree)
+	fmt.Println(``)
+	postOrder1(tree)
+
+	fmt.Print(`层序：`)
+	levelOrder(tree)
 
 	fmt.Println(`-----------------------------`)
 	ns := []node{{0, 0}, {0, 1}, {1, 1}, {1, 2}, {2, 2}, {2, 0}}
@@ -549,6 +552,22 @@ func levelOrder(root *TreeNode) {
 		return
 	}
 
+	var ret []int
+	var queue []*TreeNode
+	queue = append(queue, root)
+	for len(queue) > 0 {
+		root = queue[0]
+		ret = append(ret, root.Val)
+		queue = queue[1:]
+
+		if root.Left != nil {
+			queue = append(queue, root.Left)
+		}
+		if root.Right != nil {
+			queue = append(queue, root.Right)
+		}
+	}
+	fmt.Println(ret)
 }
 
 func levelOrder1(root *TreeNode) {
