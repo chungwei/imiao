@@ -27,6 +27,15 @@ import (
 func main() {
 	fmt.Println(lengthOfLongestSubstring1(`abcabcbb`))
 	fmt.Println(lengthOfLongestSubstring(`abcabcbb`))
+	longestSubstr(`abcabcbb`)
+	longestSubstr(`bbbbbb`)
+	longestSubstr(`pwwkew`)
+	longestSubstr(`pwwdsfsdlfhlkew`)
+	longestSubstr(`  `)
+	longestSubstr(`a`)
+	longestSubstr(`ab`)
+	longestSubstr(`abb`)
+	longestSubstr(`aab`)
 	/*fmt.Println(lengthOfLongestSubstring1(`bbbbb`))
 	fmt.Println(lengthOfLongestSubstring1(`pwwkew`))
 	fmt.Println(lengthOfLongestSubstring1(` `))
@@ -79,5 +88,41 @@ func lengthOfLongestSubstring(s string) int {
 			max = cur
 		}
 	}
+	fmt.Print(`lengthOfLongestSubstring=>`)
 	return max
+}
+
+func longestSubstr(s string) {
+	strTmp := make(map[byte]int)
+
+	l := len(s)
+	if l <= 2 {
+		if l <= 1 || (l == 2 && s[0] != s[1]) {
+			fmt.Println(s, l, s)
+		} else {
+			fmt.Println(s, l, string(s[0]))
+		}
+		return
+	}
+
+	left := -1
+	max := 0
+	min := 0
+	for i := 0; i < l; i++ {
+		char := s[i]
+
+		if index, ok := strTmp[char]; ok && index > left {
+			left = index
+		}
+
+		if count := i - left; count >= max {
+			max = count
+			min = left
+		}
+
+		strTmp[char] = i
+	}
+
+	fmt.Println(s, l, string(s[min:min+max]))
+
 }
