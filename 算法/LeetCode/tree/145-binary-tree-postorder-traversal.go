@@ -1,4 +1,4 @@
-package main
+package tree
 
 import "fmt"
 
@@ -31,18 +31,18 @@ https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
 */
 func main() {
 
-	root := new(TreeNode12)
+	root := new(TreeNode)
 	root.Val = 1
 
 	root.Left = nil
 
-	node := new(TreeNode12)
+	node := new(TreeNode)
 	node.Val = 2
 	node.Right = nil
 
 	root.Right = node
 
-	node = new(TreeNode12)
+	node = new(TreeNode)
 	node.Val = 3
 	node.Left = nil
 	node.Right = nil
@@ -51,54 +51,42 @@ func main() {
 
 	fmt.Println(`二叉树的后序遍历：`)
 	fmt.Println(postorderTraversal(root))
-	fmt.Println(postorderTraversal1(root))
-}
-
-type TreeNode12 struct {
-	Val   int
-	Left  *TreeNode12
-	Right *TreeNode12
 }
 
 // 后序遍历递归实现
-func postorderTraversal(root *TreeNode12) []int {
+func postorderTraversal(root *TreeNode) []int {
+	ret := new([]int)
+	PoOTR(root, ret)
+	return *ret
+}
+
+func PoOTR(root *TreeNode, ret *[]int) {
 	if root == nil {
-		return []int{}
+		return
 	}
 
-	ret := []int{}
-	l := postorderTraversal(root.Left)
-	ret = append(ret, l...)
-
-	r := postorderTraversal(root.Right)
-	ret = append(ret, r...)
-
-	ret = append(ret, root.Val)
-
-	return ret
+	PoOTR(root.Left, ret)         // 优先递归访问左子树
+	PoOTR(root.Right, ret)        // 递归访问右子树
+	*ret = append(*ret, root.Val) // 最后输出根结点
 }
 
 // 后序遍历非递归实现
-func postorderTraversal1(root *TreeNode12) []int {
+func PoOT(root *TreeNode, ret *[]int) {
 	if root == nil {
-		return []int{}
+		return
 	}
 
-	var ret []int
-	var stack []TreeNode12
+	var stack []TreeNode // 通过slice实现栈
 	for root != nil || len(stack) > 0 {
 		if root != nil {
 			t := []int{root.Val}
-			ret = append(t, ret...) // 注意：每次新加的元素都是放在首位
-
-			stack = append(stack, *root) // 入栈
-			root = root.Right            // 这里跟先序和中序不同
+			*ret = append(t, *ret...)    // 输出根结点元素,注意:每次新输出的元素都是放在数组首位
+			stack = append(stack, *root) // 根结点入栈
+			root = root.Right            // 优先访问右子树,这里跟先序和中序不同
 		} else {
-			root = &stack[len(stack)-1] // 出栈
+			root = &stack[len(stack)-1] // 说明右子树为空,则根结点出栈
 			stack = stack[:len(stack)-1]
 			root = root.Left
 		}
 	}
-
-	return ret
 }

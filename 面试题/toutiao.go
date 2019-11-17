@@ -5,16 +5,9 @@ import (
 )
 
 func main() {
-	// 排序
-	n := []int{3, 4, 0, 6, 21, 1}
-	fmt.Println(`冒泡：`, `=>`, bSort(n))
-
-	n = []int{3, 100, 0, 6, 21, 1}
-	fmt.Println(`快排：`, `=>`, qSort(n, 0, len(n)-1))
-	fmt.Println(`-----------------------------`)
 
 	// 二分查找
-	n = []int{0, 4, 6, 21, 100}
+	n := []int{0, 4, 6, 21, 100}
 	fmt.Println(`二分查找：`)
 	fmt.Println(n, `0 =>`, bSearch(n, 0, len(n)-1, 0))
 	fmt.Println(n, `21 =>`, bSearch(n, 0, len(n)-1, 21))
@@ -97,78 +90,19 @@ func main() {
 
 	// 二叉树
 	tree := initTree()
-	fmt.Print(`先序：`)
-	preOrder(tree)
-	fmt.Println(``)
-	preOrder1(tree)
-
-	fmt.Print(`中序：`)
-	inOrder(tree)
-	fmt.Println(``)
-	inOrder1(tree)
-
-	fmt.Print(`后序：`)
-	postOrder(tree)
-	fmt.Println(``)
-	postOrder1(tree)
 
 	fmt.Print(`层序：`)
 	levelOrder(tree)
 
 	fmt.Println(`-----------------------------`)
-	ns := []node{{0, 0}, {0, 1}, {1, 1}, {1, 2}, {2, 2}, {2, 0}}
-	fmt.Println(cal(ns, 16))
+	//ns := []Node{{0, 0}, {0, 1}, {1, 1}, {1, 2}, {2, 2}, {2, 0}}
+	//fmt.Println(cal(ns, 16))
 
 	fmt.Println(`-----------------------------`)
 
-}
+	setPart()
+	setPart1()
 
-// 冒泡排序
-func bSort(nums []int) []int {
-	l := len(nums)
-	if l <= 1 {
-		return nums
-	}
-
-	for i := 0; i < l-1; i++ {
-		f := true
-		for j := 0; j < l-i-1; j++ {
-			if nums[j] > nums[j+1] {
-				t := nums[j]
-				nums[j] = nums[j+1]
-				nums[j+1] = t
-				f = false
-			}
-		}
-		if f {
-			break
-		}
-	}
-
-	return nums
-}
-
-// 快排
-func qSort(nums []int, left, right int) []int {
-	if left > right {
-		return nums
-	}
-
-	i, j, k := left, right, nums[left]
-	for i < j {
-		for i < j && nums[j] >= k {
-			j--
-		}
-		nums[i] = nums[j]
-		for i < j && nums[i] <= k {
-			i++
-		}
-		nums[j] = nums[i]
-	}
-	nums[i] = k
-	qSort(nums, left, i-1)
-	qSort(nums, i+1, right)
-	return nums
 }
 
 // 二分查找递归实现
@@ -454,127 +388,58 @@ func initTree() *TreeNode {
 	return root
 }
 
-func preOrder(root *TreeNode) {
-	if root == nil {
-		return
-	}
-	fmt.Print(root.Val, `->`)
-	preOrder(root.Left)
-	preOrder(root.Right)
-}
-
-func preOrder1(root *TreeNode) {
-	if root == nil {
-		fmt.Println(`nil`)
-		return
-	}
-
-	var ret []int
-	var stack []*TreeNode
-	for root != nil || len(stack) > 0 {
-		if root != nil {
-			ret = append(ret, root.Val)
-			stack = append(stack, root)
-			root = root.Left
-		} else {
-			root = stack[len(stack)-1]
-			root = root.Right
-			stack = stack[:len(stack)-1]
-		}
-	}
-	fmt.Println(ret)
-}
-
-func inOrder(root *TreeNode) {
-	if root == nil {
-		return
-	}
-	inOrder(root.Left)
-	fmt.Print(root.Val, `->`)
-	inOrder(root.Right)
-}
-
-func inOrder1(root *TreeNode) {
-	if root == nil {
-		fmt.Println(`nil`)
-		return
-	}
-
-	var ret []int
-	var stack []*TreeNode
-	for root != nil || len(stack) > 0 {
-		if root != nil {
-			stack = append(stack, root)
-			root = root.Left
-		} else {
-			root = stack[len(stack)-1]
-			ret = append(ret, root.Val)
-			root = root.Right
-			stack = stack[:len(stack)-1]
-		}
-	}
-	fmt.Println(ret)
-}
-
-func postOrder(root *TreeNode) {
-	if root == nil {
-		return
-	}
-	postOrder(root.Left)
-	postOrder(root.Right)
-	fmt.Print(root.Val, `->`)
-}
-
-func postOrder1(root *TreeNode) {
-	if root == nil {
-		fmt.Println(`nil`)
-		return
-	}
-
-	var ret []int
-	var stack []*TreeNode
-	for root != nil || len(stack) > 0 {
-		if root != nil {
-			ret = append([]int{root.Val}, ret...)
-			stack = append(stack, root)
-			root = root.Right
-		} else {
-			root = stack[len(stack)-1]
-			root = root.Left
-			stack = stack[:len(stack)-1]
-		}
-	}
-	fmt.Println(ret)
-}
-
 func levelOrder(root *TreeNode) {
-	if root == nil {
-		return
-	}
+	ret := new([][]int)
+	LOTR(root, 0, ret)
+	fmt.Println(`levelOrder =`, ret)
 
-	var ret []int
-	var queue []*TreeNode
-	queue = append(queue, root)
-	for len(queue) > 0 {
-		root = queue[0]
-		ret = append(ret, root.Val)
-		queue = queue[1:]
-
-		if root.Left != nil {
-			queue = append(queue, root.Left)
-		}
-		if root.Right != nil {
-			queue = append(queue, root.Right)
-		}
-	}
-	fmt.Println(ret)
+	ret1 := new([][]int)
+	LOT(root, 0, ret1)
+	fmt.Println(`levelOrder =`, ret1)
 }
 
-func levelOrder1(root *TreeNode) {
+func LOT(root *TreeNode, level int, ret *[][]int) {
 	if root == nil {
 		return
 	}
 
+	var queue []*TreeNode       // 使用slice实现队列
+	queue = append(queue, root) // 根结点优先入队列
+	for len(queue) > 0 {
+		// 当前队列的长度等于该层的节点数
+		qlen := len(queue)
+		var tmp []int // 暂存每一层的节点元素
+		for i := 0; i < qlen; i++ {
+			root = queue[0] // 出队列
+			queue = queue[1:]
+
+			tmp = append(tmp, root.Val) // 输出出队列的元素
+			if root.Left != nil {
+				queue = append(queue, root.Left) // 左子树入队列
+			}
+			if root.Right != nil {
+				queue = append(queue, root.Right) // 右子树入队列
+			}
+		}
+		*ret = append(*ret, tmp)
+		level++
+	}
+}
+
+func LOTR(root *TreeNode, level int, ret *[][]int) {
+	if root == nil {
+		return
+	}
+
+	if level < len(*ret) {
+		// 说明该层还有节点未输出,输出该节点元素
+		(*ret)[level] = append((*ret)[level], root.Val)
+	} else {
+		// 说明该层无节点输出
+		*ret = append(*ret, []int{root.Val})
+	}
+	LOTR(root.Left, level+1, ret)  // 递归遍历左子树
+	LOTR(root.Right, level+1, ret) // 递归遍历右子树
 }
 
 type node struct {
@@ -633,4 +498,49 @@ func abs(a float64) float64 {
 		return -a
 	}
 	return a
+}
+
+func setPart() {
+	nums := []int{8, 6, 4, -3, 5, -2, -1, 0, 1, -9, 1, 0}
+	l := len(nums)
+	if l < 2 {
+		return
+	}
+	left, right, mid := 0, l-1, 0
+	for mid <= right {
+		tmp := nums[mid]
+		if tmp < 0 {
+			nums[left], nums[mid] = nums[mid], nums[left]
+			left++
+			mid++
+		} else if tmp == 0 {
+			mid++
+		} else {
+			nums[mid], nums[right] = nums[right], nums[mid]
+			right--
+		}
+	}
+	fmt.Println(`setPart >>>>>`, nums)
+
+	return
+}
+
+func setPart1() {
+	nums := []int{8, 6, 4, -3, 5, -2, -1, 0, 1, -9, 1, 0}
+	l := len(nums)
+	if l < 2 {
+		return
+	}
+	idx := -1
+	for i := 0; i < l; i++ {
+		if nums[i] < 0 {
+			tmp := nums[i]
+			nums[i] = nums[idx+1]
+			nums[idx+1] = tmp
+			idx++
+		}
+	}
+	fmt.Println(`setPart1>>>>>`, nums)
+
+	return
 }

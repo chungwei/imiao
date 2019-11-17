@@ -1,4 +1,4 @@
-package main
+package tree
 
 import "fmt"
 
@@ -51,7 +51,6 @@ func main() {
 
 	fmt.Println(`二叉树的前序遍历：`)
 	fmt.Println(preorderTraversal(root))
-	fmt.Println(preorderTraversal1(root))
 
 	n := []int{3, 4, 5}
 	n1 := []int{6}
@@ -68,40 +67,39 @@ type TreeNode struct {
 
 // 先序遍历递归实现
 func preorderTraversal(root *TreeNode) []int {
-	if root == nil {
-		return []int{}
-	}
-
-	ret := []int{}
-	ret = append(ret, root.Val)
-
-	l := preorderTraversal(root.Left)
-	ret = append(ret, l...)
-
-	r := preorderTraversal(root.Right)
-	ret = append(ret, r...)
-
-	return ret
+	ret := new([]int) // 返回值
+	PrOT(root, ret)
+	PrOTR(root, ret)
+	return *ret
 }
 
-// 先序遍历非递归实现
-func preorderTraversal1(root *TreeNode) []int {
+// 递归实现
+func PrOTR(root *TreeNode, ret *[]int) {
 	if root == nil {
-		return []int{}
+		return
 	}
 
-	var ret []int
-	var stack []TreeNode
+	*ret = append(*ret, root.Val) // 优先输出根结点
+	PrOTR(root.Left, ret)         // 递归访问左子树
+	PrOTR(root.Right, ret)        // 递归访问左子树
+}
+
+// 非递归实现,其核心是使用了栈暂存结点信息
+func PrOT(root *TreeNode, ret *[]int) {
+	if root == nil {
+		return
+	}
+
+	var stack []TreeNode // 通过slice实现栈
 	for root != nil || len(stack) > 0 {
 		if root != nil {
-			ret = append(ret, root.Val)
-			stack = append(stack, *root) // 入栈
-			root = root.Left
+			*ret = append(*ret, root.Val) // 输出根结点
+			stack = append(stack, *root)  // 根结点入栈
+			root = root.Left              // 优先访问左子树
 		} else {
 			root = &stack[len(stack)-1]
-			stack = stack[:len(stack)-1] // 出栈
-			root = root.Right
+			stack = stack[:len(stack)-1] // 说明左子树为空,根结点出栈
+			root = root.Right            // 访问右子树
 		}
 	}
-	return ret
 }
