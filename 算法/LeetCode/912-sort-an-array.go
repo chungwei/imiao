@@ -73,15 +73,16 @@ func bubbleSort(nums []int) []int {
 		f := true
 		for j := 0; j < l-i-1; j++ {
 			if nums[j] > nums[j+1] {
-				nums[j], nums[j+1] = nums[j+1], nums[j]
 				f = false
+				tmp := nums[j]
+				nums[j] = nums[j+1]
+				nums[j+1] = tmp
 			}
 		}
 		if f {
 			break
 		}
 	}
-
 	return nums
 }
 
