@@ -1,7 +1,5 @@
 package tree
 
-import "fmt"
-
 /**
 144. 二叉树的前序遍历
 94. 二叉树的中序遍历
@@ -29,36 +27,6 @@ https://leetcode-cn.com/problems/binary-tree-level-order-traversal/
 
 著作权归领扣网络所有。商业转载请联系官方授权，非商业转载请注明出处。
 */
-func main() {
-
-	root := new(TreeNode)
-	root.Val = 1
-
-	root.Left = nil
-
-	node := new(TreeNode)
-	node.Val = 2
-	node.Right = nil
-
-	root.Right = node
-
-	node = new(TreeNode)
-	node.Val = 3
-	node.Left = nil
-	node.Right = nil
-
-	root.Right.Left = node
-
-	fmt.Println(`二叉树的前序遍历：`)
-	fmt.Println(preorderTraversal(root))
-
-	n := []int{3, 4, 5}
-	n1 := []int{6}
-	n = append(n1, n...)
-	fmt.Println(n)
-
-}
-
 type TreeNode struct {
 	Val   int
 	Left  *TreeNode
