@@ -3,7 +3,6 @@ package tree
 /**
 111. 二叉树的最小深度
 给定一个二叉树，找出其最小深度。
-
 最小深度是从根节点到最近叶子节点的最短路径上的节点数量。
 
 说明: 叶子节点是指没有子节点的节点。
@@ -26,34 +25,28 @@ package tree
 /**
 递归实现
 */
-func minDepth(root *TreeNode) int {
+func maxDepth(root *TreeNode) int {
 	if root == nil {
 		return 0
 	}
 
-	if root.Right == nil && root.Left == nil {
-		return 1 // 说明是叶子节点
-	}
-	left := minDepth(root.Left)
-	right := minDepth(root.Right)
+	left := maxDepth(root.Left)
+	right := maxDepth(root.Right)
 
-	if left == 0 || right == 0 {
-		return left + right + 1 // 说明无左子树或右子树
-	}
-	return min(left, right) + 1
+	return max(left, right) + 1
 }
 
-func min(n1, n2 int) int {
+func max(n1, n2 int) int {
 	if n1 > n2 {
-		return n2
+		return n1
 	}
-	return n1
+	return n2
 }
 
 /**
 非递归实现
 */
-func minDepthByIteration(root *TreeNode) int {
+func maxDepthByIteration(root *TreeNode) int {
 	if root == nil {
 		return 0
 	}
@@ -68,12 +61,6 @@ func minDepthByIteration(root *TreeNode) int {
 			root = queue[0] // 出队列
 			queue = queue[1:]
 
-			if root.Left == nil && root.Right == nil {
-				// 无左子树和右子树,说明是叶子节点
-				// 这里必须+1
-				return level + 1
-			}
-
 			if root.Left != nil {
 				queue = append(queue, root.Left) // 左子树入队列
 			}
@@ -83,5 +70,5 @@ func minDepthByIteration(root *TreeNode) int {
 		}
 		level++ // 层数累加
 	}
-	return 0
+	return level
 }
